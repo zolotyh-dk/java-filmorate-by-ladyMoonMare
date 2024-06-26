@@ -1,8 +1,6 @@
-package ru.yandex.practicum.filmorate;
+package ru.yandex.practicum.filmorate.controller;
 
-import org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.exception.InvalidDataException;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -14,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class UserControllerTest {
 
     @Test
-    public void shouldThrowExcForInvalidLogin(){
+    public void shouldThrowExcForInvalidLogin() {
         UserController uc = new UserController();
         User user = new User("ya@yandex.ru","", "name",
                 LocalDate.parse("2002-07-30"));
@@ -31,7 +29,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void shouldBePositiveIfUserIsAdded(){
+    public void shouldBePositiveIfUserIsAdded() {
         UserController uc = new UserController();
         User user = new User("ya@yandex.ru","user", "name",
                 LocalDate.parse("2002-07-30"));
@@ -48,7 +46,7 @@ public class UserControllerTest {
         uc.addUser(user);
         user.setName("UploadedName");
         uc.updateUser(user);
-        assertEquals(user.getName(),uc.getAllUsers().get(0).getName());
+        assertEquals("UploadedName",uc.getAllUsers().get(0).getName());
     }
 
     @Test
