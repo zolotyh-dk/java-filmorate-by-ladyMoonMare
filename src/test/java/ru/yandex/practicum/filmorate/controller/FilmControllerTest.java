@@ -47,10 +47,7 @@ public class FilmControllerTest {
     @Test
     public void shouldThrowExcForInvalidDescription() {
         FilmController fc = new FilmController();
-        Film film = new Film("Title","DescriptionDescriptionDescription" +
-                "DescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescription" +
-                "DescriptionDescriptionDescriptionDescriptionDescription" +
-                "DescriptionDescriptionDescriptionDes", LocalDate.parse("2002-07-30"),
+        Film film = new Film("Title","1".repeat(201), LocalDate.parse("2002-07-30"),
                 Duration.parse("PT40M"));
         assertThrows(InvalidDataException.class, () -> fc.addFilm(film));
     }

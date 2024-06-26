@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.InvalidDataException;
@@ -18,7 +19,7 @@ public class FilmController {
     private static final int MAX_DESCRIPTION_LENGTH = 200;
     private static final LocalDate FIRST_CINEMA_DATE = LocalDate.parse("28.12.1895",
             DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-    IdGenerator idGen = new IdGenerator();
+    private IdGenerator idGen = new IdGenerator();
 
     @GetMapping
     public List<Film> getAllFilms() {
@@ -26,7 +27,7 @@ public class FilmController {
     }
 
     @PostMapping
-    public Film addFilm(@RequestBody Film film) {
+    public Film addFilm(@Valid @RequestBody Film film) {
         log.info("addFilm attempt {}",film);
 
 
@@ -51,7 +52,7 @@ public class FilmController {
     }
 
     @PutMapping
-    public Film updateFilm(@RequestBody Film film) {
+    public Film updateFilm(@Valid @RequestBody Film film) {
         log.info("updateFilm attempt {}",film);
         if (!films.containsKey(film.getId())) {
             log.warn("updateFilm failure - film {} has not been uploaded", film);

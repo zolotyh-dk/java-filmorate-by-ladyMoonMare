@@ -14,7 +14,7 @@ import java.util.*;
 @Slf4j
 public class UserController {
     private final Map<Integer, User> users = new HashMap<>();
-    IdGenerator idGen = new IdGenerator();
+    private IdGenerator idGen = new IdGenerator();
 
 
     @GetMapping
