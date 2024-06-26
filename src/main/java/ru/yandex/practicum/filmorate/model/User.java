@@ -15,12 +15,13 @@ public class User {
     private int id;
     private String email;
     private String login;
-    private String name;
+    private String name = "";
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate birthday;
 
     public User(String email, String login, LocalDate birthday) {
+        name = login;
         this.email = email;
         this.login = login;
         this.birthday = birthday;
