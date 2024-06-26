@@ -39,6 +39,15 @@ public class UserControllerTest {
     }
 
     @Test
+    public void shouldBePositiveIfUserIdIsEqual() {
+        UserController uc = new UserController();
+        User user = new User("ya@yandex.ru","user", "name",
+                LocalDate.parse("2002-07-30"));
+        uc.addUser(user);
+        assertEquals(user.getId(),uc.getAllUsers().get(0).getId());
+    }
+
+    @Test
     public void shouldBePositiveIfUserIsUpdated() {
         UserController uc = new UserController();
         User user = new User("ya@yandex.ru","user", "name",
