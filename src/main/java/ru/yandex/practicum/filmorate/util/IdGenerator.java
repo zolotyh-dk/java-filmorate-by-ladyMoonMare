@@ -4,5 +4,9 @@ import lombok.Getter;
 
 @Getter
 public class IdGenerator {
-    private Integer id = hashCode();
+    private Integer id = 1;
+
+    public void reloadId () {
+        id++;
+    }
 }

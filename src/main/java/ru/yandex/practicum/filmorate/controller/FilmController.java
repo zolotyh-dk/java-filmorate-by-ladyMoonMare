@@ -18,6 +18,7 @@ public class FilmController {
     private static final int MAX_DESCRIPTION_LENGTH = 200;
     private static final LocalDate FIRST_CINEMA_DATE = LocalDate.parse("28.12.1895",
             DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+    IdGenerator idGen = new IdGenerator();
 
     @GetMapping
     public List<Film> getAllFilms() {
@@ -27,7 +28,7 @@ public class FilmController {
     @PostMapping
     public Film addFilm(@RequestBody Film film) {
         log.info("addFilm attempt {}",film);
-        IdGenerator idGen = new IdGenerator();
+
 
         films.values()
                 .forEach(f -> {
@@ -43,6 +44,7 @@ public class FilmController {
         }
         validateFilm(film);
         film.setId(idGen.getId());
+        idGen.reloadId();
         films.put(film.getId(),film);
         log.info("addFilm {} success",film);
         return film;

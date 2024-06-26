@@ -14,6 +14,7 @@ import java.util.*;
 @Slf4j
 public class UserController {
     private final Map<Integer, User> users = new HashMap<>();
+    IdGenerator idGen = new IdGenerator();
 
 
     @GetMapping
@@ -24,7 +25,6 @@ public class UserController {
     @PostMapping
     public User addUser(@RequestBody User user) {
         log.info("addUser attempt {}",user);
-        IdGenerator idGen = new IdGenerator();
         users.values()
                 .forEach(u -> {
                     if (u.getLogin().equals(user.getLogin())) {
@@ -38,6 +38,7 @@ public class UserController {
         }
         validateUser(user);
         user.setId(idGen.getId());
+        idGen.reloadId();
         users.put(user.getId(),user);
         log.info("addUser {} success",user);
         return user;
@@ -68,7 +69,7 @@ public class UserController {
             log.warn("Data error - invalid birthday {}",user.getBirthday());
             throw new InvalidDataException("Invalid birthday");
         }
-        if (user.getName().isEmpty() || user.getName().isBlank()) {
+        if (user.getName().isEmpty() || user.getName().isBlank() || user.getName() == null) {
             log.info("Username is empty, login is username");
             user.setName(user.getLogin());
         }
