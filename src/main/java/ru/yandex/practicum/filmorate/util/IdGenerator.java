@@ -6,7 +6,7 @@ import lombok.Getter;
 public class IdGenerator {
     private Integer id = 1;
 
-    public void reloadId () {
+    public void reloadId() {
         id++;
     }
 }
