@@ -13,7 +13,7 @@ public class UserControllerTest {
 
     @Test
     public void shouldThrowExcForInvalidLogin() {
-        UserController uc = new UserController();
+        UserController uc = new UserController(userService);
         User user = new User("ya@yandex.ru","", "name",
                 LocalDate.parse("2002-07-30"));
         assertThrows(InvalidDataException.class,() -> uc.addUser(user));
@@ -30,7 +30,7 @@ public class UserControllerTest {
 
     @Test
     public void shouldBePositiveIfUserIsAdded() {
-        UserController uc = new UserController();
+        UserController uc = new UserController(userService);
         User user = new User("ya@yandex.ru","user", "name",
                 LocalDate.parse("2002-07-30"));
         uc.addUser(user);
@@ -40,7 +40,7 @@ public class UserControllerTest {
 
     @Test
     public void shouldBePositiveIfUserIdIsEqual() {
-        UserController uc = new UserController();
+        UserController uc = new UserController(userService);
         User user = new User("ya@yandex.ru","user", "name",
                 LocalDate.parse("2002-07-30"));
         uc.addUser(user);
@@ -49,7 +49,7 @@ public class UserControllerTest {
 
     @Test
     public void shouldBePositiveIfUserIsUpdated() {
-        UserController uc = new UserController();
+        UserController uc = new UserController(userService);
         User user = new User("ya@yandex.ru","user", "name",
                 LocalDate.parse("2002-07-30"));
         uc.addUser(user);
@@ -60,7 +60,7 @@ public class UserControllerTest {
 
     @Test
     public void shouldThrowExcForInvalidEmail() {
-        UserController uc = new UserController();
+        UserController uc = new UserController(userService);
         User user = new User("","login", "name",
                 LocalDate.parse("2002-07-30"));
         assertThrows(InvalidDataException.class,() -> uc.addUser(user));
@@ -76,7 +76,7 @@ public class UserControllerTest {
 
     @Test
     public void shouldThrowExcForInvalidBirthday() {
-        UserController uc = new UserController();
+        UserController uc = new UserController(userService);
         User user = new User("ya@yandex.ru","login", "name",
                 LocalDate.parse("2024-07-30"));
         assertThrows(InvalidDataException.class,() -> uc.addUser(user));
@@ -88,7 +88,7 @@ public class UserControllerTest {
 
     @Test
     public void shouldSetNameForLoginIfNameIsEmpty() {
-        UserController uc = new UserController();
+        UserController uc = new UserController(userService);
         User user = new User("ya@yandex.ru","login", "",
                 LocalDate.parse("2002-07-30"));
         uc.addUser(user);

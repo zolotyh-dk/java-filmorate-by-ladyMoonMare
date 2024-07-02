@@ -1,67 +1,78 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.InvalidDataException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.util.IdGenerator;
+import ru.yandex.practicum.filmorate.service.user.UserService;
 
 import java.time.LocalDate;
 import java.util.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/users")
 @Slf4j
 public class UserController {
-    private final Map<Integer, User> users = new HashMap<>();
-    private IdGenerator idGen = new IdGenerator();
-
-
+    private final UserService userService;
     @GetMapping
     public List<User> getAllUsers() {
-        return new ArrayList<>(users.values());
+        return userService.getAllUsers();
     }
 
     @PostMapping
-    public User addUser(@RequestBody User user) {
+    public User addUser(@Valid @RequestBody User user) {
         log.info("addUser attempt {}",user);
-        users.values()
-                .forEach(u -> {
-                    if (u.getLogin().equals(user.getLogin())) {
-                        log.warn("addUser attempt failure - user {} is already registered",user);
-                        throw new InvalidDataException("User is already registered");
-                    }
-                });
-        if (users.containsValue(user)) {
-            log.warn("addUser attempt failure - user {} is already registered",user);
-            throw new InvalidDataException("User is already registered");
-        }
         validateUser(user);
-        user.setId(idGen.getId());
-        idGen.reloadId();
-        users.put(user.getId(),user);
+        userService.addUser(user);
         log.info("addUser {} success",user);
         return user;
     }
 
     @PutMapping
-    public User updateUser(@RequestBody User user) {
+    public User updateUser(@Valid @RequestBody User user) {
         log.info("updateUser attempt {}",user);
-        if (!users.containsKey(user.getId())) {
-            log.warn("updateUser failure - user {} has not been registered", user);
-            throw new InvalidDataException("User has not been registered");
-        }
         validateUser(user);
-        users.put(user.getId(),user);
-        log.info("updateUser {} success", user);
+        userService.updateUser(user);
         return user;
     }
 
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable Integer id) {
+        log.info("attempt to get user by id {}",id);
+        return userService.getUserById(id);
+    }
+
+    @GetMapping("/{id}/friends")
+    public List<User> getUserFriends(@PathVariable Integer id) {
+        log.info("attempt to get user friend list by id {}",id);
+        return userService.getUserFriends(id);
+    }
+
+    @PostMapping("/{id}/friends/{friendId}")
+    public List<User> addFriend(@PathVariable Integer id, @PathVariable Integer friendId){
+        log.info("attempt to add user {} to user's {} friend list", friendId, id);
+        userService.addFriend(id, friendId);
+        return userService.getUserFriends(id);
+    }
+
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public List<User> deleteFriend(@PathVariable Integer id, @PathVariable Integer friendId){
+        log.info("attempt to delete user {} from user's {} friend list", friendId, id);
+        userService.deleteFriend(id, friendId);
+        return userService.getUserFriends(id);
+    }
+
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public List<User> getCommonFriends(@PathVariable Integer id, @PathVariable Integer otherId){
+        log.info("attempt to find user's {} and user's {} common friends", otherId, id);
+        return userService.getCommonFriends(id, otherId);
+    }
+
     public void validateUser(User user) {
-        if (user.getEmail().isEmpty() || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
-            log.warn("Data error - invalid email {}",user.getEmail());
-            throw new InvalidDataException("Invalid email");
-        } else if (user.getLogin().isEmpty() || user.getLogin().contains(" ")) {
+        if (user.getLogin().contains(" ")) {
             log.warn("Data error - invalid login {}",user.getLogin());
             throw new InvalidDataException("Invalid login");
         } else if (user.getBirthday().isAfter(LocalDate.now()) ||
@@ -69,8 +80,8 @@ public class UserController {
             log.warn("Data error - invalid birthday {}",user.getBirthday());
             throw new InvalidDataException("Invalid birthday");
         }
-        if (user.getName().isEmpty() || user.getName().isBlank() || user.getName() == null) {
-            log.info("Username is empty, login is username");
+        if (user.getName().isEmpty() || user.getName().isBlank()) {
+            log.info("Username is empty, login becomes username");
             user.setName(user.getLogin());
         }
     }
