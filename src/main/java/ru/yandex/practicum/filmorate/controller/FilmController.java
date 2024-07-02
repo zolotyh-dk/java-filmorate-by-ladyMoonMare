@@ -1,10 +1,12 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.InvalidDataException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.film.FilmService;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.util.IdGenerator;
@@ -15,6 +17,7 @@ import java.util.*;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/films")
 public class FilmController {
     private FilmService filmService;
@@ -46,6 +49,12 @@ public class FilmController {
     public Film getFilmById(@PathVariable Integer id){
         log.info("attempt to get film by id {}",id);
         return filmService.getFilmById(id);
+    }
+
+    @PutMapping("/{id}/like/{userId}")
+    public List<User> addLike(@PathVariable Integer id, @PathVariable Integer userId){
+        log.info("attempt set like to film {} by user {}", id, userId);
+        return filmService.addLike(id,userId);
     }
 
 

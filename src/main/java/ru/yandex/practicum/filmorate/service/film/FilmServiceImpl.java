@@ -1,17 +1,23 @@
 package ru.yandex.practicum.filmorate.service.film;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.user.UserService;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class FilmServiceImpl implements FilmService{
     private FilmStorage filmStorage;
+    private UserService userService;
 
     @Override
     public List<Film> getAllFilms() {
@@ -36,5 +42,13 @@ public class FilmServiceImpl implements FilmService{
                     return new DataNotFoundException("Film with id {} not found");
                 }
         );
+    }
+    @Override
+    public List<User> addLike(Integer id, Integer userId) {
+        User user = userService.getUserById(userId);
+        Film film = getFilmById(id);
+        film.getLikes().add(user);
+        log.info("user {} successfully liked film {}", userId, id);
+        return new ArrayList<>(film.getLikes());
     }
 }
