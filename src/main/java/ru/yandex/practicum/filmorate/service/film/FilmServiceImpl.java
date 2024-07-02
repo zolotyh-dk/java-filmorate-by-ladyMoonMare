@@ -66,10 +66,15 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public List<Film> getPopularFilms(Integer count) {
-        return filmStorage.getAllFilms().stream()
-                .sorted(Comparator.comparingInt(o -> o.getLikes().size()))
-                .distinct()
+        List<Film> allFilms = filmStorage.getAllFilms();
+        return allFilms.stream()
+                .sorted(new Comparator<Film>() {
+                    @Override
+                    public int compare(Film o1, Film o2) {
+                        return o1.getLikes().size() - o2.getLikes().size();
+                    }
+                })
                 .limit(count)
-                .collect(Collectors.toList());
+                .toList();
     }
 }
