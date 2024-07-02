@@ -10,7 +10,9 @@ import ru.yandex.practicum.filmorate.service.user.UserService;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -64,26 +66,10 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public List<Film> getPopularFilms(Integer count) {
-        List<Film> popularFilms = new ArrayList<>();
-        int number = 0;
-        List<Film> allFilms = filmStorage.getAllFilms();
-        Film mostlikedFilm = allFilms.get(0);
-
-        if (count > allFilms.size()) {
-            count = allFilms.size();
-        }
-
-        while (count != number) {
-            for (Film film : allFilms) {
-                if (film.getLikes().size() > mostlikedFilm.getLikes().size()) {
-                    mostlikedFilm = film;
-                }
-            }
-            popularFilms.add(mostlikedFilm);
-            allFilms.remove(mostlikedFilm);
-            mostlikedFilm = allFilms.get(0);
-            number++;
-        }
-        return popularFilms;
+        return filmStorage.getAllFilms().stream()
+                .sorted(Comparator.comparingInt(o -> o.getLikes().size()))
+                .distinct()
+                .limit(count)
+                .collect(Collectors.toList());
     }
 }
