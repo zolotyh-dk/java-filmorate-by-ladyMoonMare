@@ -15,7 +15,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class FilmServiceImpl implements FilmService{
+public class FilmServiceImpl implements FilmService {
     private FilmStorage filmStorage;
     private UserService userService;
 
@@ -35,14 +35,15 @@ public class FilmServiceImpl implements FilmService{
     }
 
     @Override
-    public Film getFilmById(Integer id){
+    public Film getFilmById(Integer id) {
         return filmStorage.findFilmById(id).orElseThrow(
-                () ->{
+                () -> {
                     log.warn("Film with id {} not found",id);
                     return new DataNotFoundException("Film with id {} not found");
                 }
         );
     }
+
     @Override
     public List<User> addLike(Integer id, Integer userId) {
         User user = userService.getUserById(userId);
@@ -60,6 +61,7 @@ public class FilmServiceImpl implements FilmService{
         log.info("user {} successfully removed like from film {}", userId, id);
         return new ArrayList<>(film.getLikes());
     }
+
     @Override
     public List<Film> getPopularFilms(Integer count) {
         List<Film> popularFilms = new ArrayList<>();
@@ -72,7 +74,7 @@ public class FilmServiceImpl implements FilmService{
         }
 
         while (count != number) {
-            for (Film film : allFilms){
+            for (Film film : allFilms) {
                 if (film.getLikes().size() > mostlikedFilm.getLikes().size()) {
                     mostlikedFilm = film;
                 }

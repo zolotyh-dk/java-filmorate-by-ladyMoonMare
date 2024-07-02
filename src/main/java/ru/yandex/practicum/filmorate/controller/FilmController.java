@@ -44,19 +44,19 @@ public class FilmController {
     }
 
     @GetMapping("/{id}")
-    public Film getFilmById(@PathVariable Integer id){
+    public Film getFilmById(@PathVariable Integer id) {
         log.info("attempt to get film by id {}",id);
         return filmService.getFilmById(id);
     }
 
     @PutMapping("/{id}/like/{userId}")
-    public List<User> addLike(@PathVariable Integer id, @PathVariable Integer userId){
+    public List<User> addLike(@PathVariable Integer id, @PathVariable Integer userId) {
         log.info("attempt set like to film {} by user {}", id, userId);
         return filmService.addLike(id,userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
-    public List<User> removeLike(@PathVariable Integer id, @PathVariable Integer userId){
+    public List<User> removeLike(@PathVariable Integer id, @PathVariable Integer userId) {
         log.info("attempt remove like from film {} by user {}", id, userId);
         return filmService.removeLike(id,userId);
     }

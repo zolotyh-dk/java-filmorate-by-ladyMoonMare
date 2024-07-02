@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(Integer id) {
         return userStorage.findUserById(id).orElseThrow(
-                () ->{
+                () -> {
                     log.warn("User with id {} not found",id);
                     return new DataNotFoundException("User with id {} not found");
                 }
