@@ -1,16 +1,13 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.InvalidDataException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.film.FilmService;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
-import ru.yandex.practicum.filmorate.util.IdGenerator;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -69,7 +66,7 @@ public class FilmController {
         if (count.isEmpty()) {
             count = Optional.of(10);
         } else if (count.get() <= 0) {
-            throw new InvalidDataException("Number of films must be positive");
+            throw new ValidationException("Number of films must be positive");
         }
         return filmService.getPopularFilms(count.get());
     }
@@ -78,7 +75,7 @@ public class FilmController {
         if (film.getReleaseDate().isBefore(FIRST_CINEMA_DATE) ||
                 film.getReleaseDate().isAfter(LocalDate.now())) {
             log.warn("Data error - invalid release date {}",film.getReleaseDate());
-            throw new InvalidDataException("Invalid date");
+            throw new ValidationException("Invalid date");
         }
     }
 }

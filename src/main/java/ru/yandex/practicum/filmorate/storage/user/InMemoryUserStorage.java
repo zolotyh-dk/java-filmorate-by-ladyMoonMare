@@ -1,10 +1,9 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestBody;
-import ru.yandex.practicum.filmorate.exception.InvalidDataException;
+import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.util.IdGenerator;
 
@@ -28,12 +27,12 @@ public class InMemoryUserStorage implements UserStorage {
                 .forEach(u -> {
                     if (u.getLogin().equals(user.getLogin())) {
                         log.warn("addUser attempt failure - user {} is already registered",user);
-                        throw new InvalidDataException("User is already registered");
+                        throw new ValidationException("User is already registered");
                     }
                 });
         if (users.containsValue(user)) {
             log.warn("addUser attempt failure - user {} is already registered",user);
-            throw new InvalidDataException("User is already registered");
+            throw new ValidationException("User is already registered");
         }
         user.setId(idGen.getId());
         idGen.reloadId();
@@ -46,7 +45,7 @@ public class InMemoryUserStorage implements UserStorage {
     public User updateUser(User user) {
         if (!users.containsKey(user.getId())) {
             log.warn("updateUser failure - user {} has not been registered", user);
-            throw new InvalidDataException("User has not been registered");
+            throw new DataNotFoundException("User has not been registered");
         }
         users.put(user.getId(),user);
         log.info("updateUser {} success", user);

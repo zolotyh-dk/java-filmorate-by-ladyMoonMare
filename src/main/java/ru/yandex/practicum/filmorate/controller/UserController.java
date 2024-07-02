@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.InvalidDataException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.user.UserService;
 
@@ -74,11 +74,11 @@ public class UserController {
     public void validateUser(User user) {
         if (user.getLogin().contains(" ")) {
             log.warn("Data error - invalid login {}",user.getLogin());
-            throw new InvalidDataException("Invalid login");
+            throw new ValidationException("Invalid login");
         } else if (user.getBirthday().isAfter(LocalDate.now()) ||
                 user.getBirthday().isEqual(LocalDate.now()) || user.getBirthday() == null) {
             log.warn("Data error - invalid birthday {}",user.getBirthday());
-            throw new InvalidDataException("Invalid birthday");
+            throw new ValidationException("Invalid birthday");
         }
         if (user.getName().isEmpty() || user.getName().isBlank()) {
             log.info("Username is empty, login becomes username");
