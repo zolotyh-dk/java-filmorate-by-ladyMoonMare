@@ -70,7 +70,7 @@ public class FilmServiceImpl implements FilmService {
                 .sorted(new Comparator<Film>() {
                     @Override
                     public int compare(Film o1, Film o2) {
-                        return o1.getLikes().size() - o2.getLikes().size();
+                        return o2.getLikes().size() - o1.getLikes().size();
                     }
                 })
                 .limit(count)
