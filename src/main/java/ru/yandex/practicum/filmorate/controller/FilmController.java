@@ -18,9 +18,10 @@ import java.util.*;
 @RequiredArgsConstructor
 @RequestMapping("/films")
 public class FilmController {
-    private FilmService filmService;
+    private final FilmService filmService;
     private static final LocalDate FIRST_CINEMA_DATE = LocalDate.parse("28.12.1895",
             DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+
 
     @GetMapping
     public List<Film> getAllFilms() {
@@ -76,6 +77,8 @@ public class FilmController {
                 film.getReleaseDate().isAfter(LocalDate.now())) {
             log.warn("Data error - invalid release date {}",film.getReleaseDate());
             throw new ValidationException("Invalid date");
+        } else if (film.getDuration().toMinutes() <= 0) {
+            throw new ValidationException("Invalid duration");
         }
     }
 }

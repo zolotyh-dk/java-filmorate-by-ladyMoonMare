@@ -29,7 +29,7 @@ public class Film {
     private LocalDate releaseDate;
     @JsonSerialize(using = DurationSerializer.class)
     @JsonDeserialize(using = DurationDeserializer.class)
-    @Min(1)
+    @NotNull
     private Duration duration;
     private Set<User> likes = new HashSet<>();
 
