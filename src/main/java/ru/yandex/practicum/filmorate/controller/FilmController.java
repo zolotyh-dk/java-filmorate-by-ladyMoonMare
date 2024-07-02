@@ -62,7 +62,7 @@ public class FilmController {
         return filmService.removeLike(id,userId);
     }
 
-    @GetMapping("/popular?count={count}")
+    @GetMapping("/popular")
     public List<Film> getPopularFilms(@PathVariable Optional<Integer> count) {
         if (count.isEmpty()) {
             count = Optional.of(10);
