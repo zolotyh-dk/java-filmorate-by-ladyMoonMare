@@ -19,4 +19,6 @@ public interface FilmService {
     List<User> addLike(Integer id, Integer userId);
 
     List<User> removeLike(Integer id, Integer userId);
+
+    List<Film> getPopularFilms(Integer count);
 }

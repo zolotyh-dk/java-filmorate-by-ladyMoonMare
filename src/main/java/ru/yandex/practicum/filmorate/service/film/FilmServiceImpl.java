@@ -60,4 +60,28 @@ public class FilmServiceImpl implements FilmService{
         log.info("user {} successfully removed like from film {}", userId, id);
         return new ArrayList<>(film.getLikes());
     }
+    @Override
+    public List<Film> getPopularFilms(Integer count) {
+        List<Film> popularFilms = new ArrayList<>();
+        int number = 0;
+        List<Film> allFilms = filmStorage.getAllFilms();
+        Film mostlikedFilm = allFilms.get(0);
+
+        if (count > allFilms.size()) {
+            count = allFilms.size();
+        }
+
+        while (count != number) {
+            for (Film film : allFilms){
+                if (film.getLikes().size() > mostlikedFilm.getLikes().size()) {
+                    mostlikedFilm = film;
+                }
+            }
+            popularFilms.add(mostlikedFilm);
+            allFilms.remove(mostlikedFilm);
+            mostlikedFilm = allFilms.get(0);
+            number++;
+        }
+        return popularFilms;
+    }
 }

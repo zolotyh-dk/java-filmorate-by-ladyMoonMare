@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -61,6 +62,16 @@ public class FilmController {
     public List<User> removeLike(@PathVariable Integer id, @PathVariable Integer userId){
         log.info("attempt remove like from film {} by user {}", id, userId);
         return filmService.removeLike(id,userId);
+    }
+
+    @GetMapping("/popular?count={count}")
+    public List<Film> getPopularFilms(@PathVariable Optional<Integer> count) {
+        if (count.isEmpty()) {
+            count = Optional.of(10);
+        } else if (count.get() <= 0) {
+            throw new InvalidDataException("Number of films must be positive");
+        }
+        return filmService.getPopularFilms(count.get());
     }
 
     private void validateFilm(Film film) {
