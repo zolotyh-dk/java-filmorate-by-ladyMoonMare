@@ -6,10 +6,7 @@ import ru.yandex.practicum.filmorate.exception.InvalidDataException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.util.IdGenerator;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 @Slf4j
@@ -52,5 +49,10 @@ public class InMemoryFilmStorage implements FilmStorage {
         films.put(film.getId(),film);
         log.info("updateFilm {} success",film);
         return film;
+    }
+
+    @Override
+    public Optional<Film> findFilmById(Integer id) {
+        return Optional.ofNullable(films.get(id));
     }
 }

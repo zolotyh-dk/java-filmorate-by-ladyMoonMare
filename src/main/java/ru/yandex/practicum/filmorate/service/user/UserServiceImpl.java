@@ -1,16 +1,14 @@
 package ru.yandex.practicum.filmorate.service.user;
 
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
+import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -40,7 +38,7 @@ public class UserServiceImpl implements UserService {
         return userStorage.findUserById(id).orElseThrow(
                 () ->{
                     log.warn("User with id {} not found",id);
-                    return new UserNotFoundException("User with id {} not found");
+                    return new DataNotFoundException("User with id {} not found");
                 }
         );
     }

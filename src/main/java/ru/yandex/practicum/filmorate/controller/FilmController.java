@@ -42,6 +42,13 @@ public class FilmController {
         return film;
     }
 
+    @GetMapping("/{id}")
+    public Film getFilmById(@PathVariable Integer id){
+        log.info("attempt to get film by id {}",id);
+        return filmService.getFilmById(id);
+    }
+
+
     private void validateFilm(Film film) {
         if (film.getReleaseDate().isBefore(FIRST_CINEMA_DATE) ||
                 film.getReleaseDate().isAfter(LocalDate.now())) {
