@@ -51,7 +51,7 @@ public class UserController {
         return userService.getUserFriends(id);
     }
 
-    @PostMapping("/{id}/friends/{friendId}")
+    @PutMapping("/{id}/friends/{friendId}")
     public List<User> addFriend(@PathVariable Integer id, @PathVariable Integer friendId){
         log.info("attempt to add user {} to user's {} friend list", friendId, id);
         userService.addFriend(id, friendId);
