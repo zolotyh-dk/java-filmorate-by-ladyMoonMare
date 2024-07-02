@@ -14,11 +14,11 @@ public interface UserService {
 
     User getUserById(Integer id);
 
-    List<String> getUserFriends(Integer id);
+    List<User> getUserFriends(Integer id);
 
     void addFriend(Integer id, Integer friendId);
 
     void deleteFriend(Integer id,Integer friendId);
 
-    List<String> getCommonFriends(Integer id, Integer otherId);
+    List<User> getCommonFriends(Integer id, Integer otherId);
 }

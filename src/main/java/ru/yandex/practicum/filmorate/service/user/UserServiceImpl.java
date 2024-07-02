@@ -45,16 +45,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public  List<String> getUserFriends(Integer id) {
-        return new ArrayList<>(getUserById(id).getFriends());
+    public  List<User> getUserFriends(Integer id) {
+        List<User> friends = new ArrayList<>();
+        for (Integer i : getUserById(id).getFriends()) {
+            friends.add(getUserById(i));
+        }
+        return friends;
     }
 
     @Override
     public void addFriend(Integer id, Integer friendId) {
         User user = getUserById(id);
         User friend = getUserById(friendId);
-        user.getFriends().add(friend.getLogin());
-        friend.getFriends().add(user.getLogin());
+        user.getFriends().add(friendId);
+        friend.getFriends().add(id);
         log.info("user {} successfully added to friend list", friendId);
     }
 
@@ -62,20 +66,20 @@ public class UserServiceImpl implements UserService {
     public void deleteFriend(Integer id, Integer friendId) {
         User user = getUserById(id);
         User friend = getUserById(friendId);
-        user.getFriends().remove(friend.getLogin());
-        friend.getFriends().remove(user.getLogin());
+        user.getFriends().remove(friendId);
+        friend.getFriends().remove(id);
         log.info("user {} successfully deleted from friend list", friendId);
     }
 
     @Override
-    public List<String> getCommonFriends(Integer id, Integer otherId) {
+    public List<User> getCommonFriends(Integer id, Integer otherId) {
         User user = getUserById(id);
         User otherUser = getUserById(otherId);
-        List<String> commonFriends = new ArrayList<>();
-        for (String i : user.getFriends()) {
-            for (String oi: otherUser.getFriends()) {
+        List<User> commonFriends = new ArrayList<>();
+        for (Integer i : user.getFriends()) {
+            for (Integer oi: otherUser.getFriends()) {
                 if (Objects.equals(i, oi)) {
-                    commonFriends.add(i);
+                    commonFriends.add(getUserById(i));
                 }
             }
         }
