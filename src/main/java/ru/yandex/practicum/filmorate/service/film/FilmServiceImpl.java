@@ -51,4 +51,13 @@ public class FilmServiceImpl implements FilmService{
         log.info("user {} successfully liked film {}", userId, id);
         return new ArrayList<>(film.getLikes());
     }
+
+    @Override
+    public List<User> removeLike(Integer id, Integer userId) {
+        User user = userService.getUserById(userId);
+        Film film = getFilmById(id);
+        film.getLikes().remove(user);
+        log.info("user {} successfully removed like from film {}", userId, id);
+        return new ArrayList<>(film.getLikes());
+    }
 }

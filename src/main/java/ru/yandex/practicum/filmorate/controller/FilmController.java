@@ -57,6 +57,11 @@ public class FilmController {
         return filmService.addLike(id,userId);
     }
 
+    @DeleteMapping("/{id}/like/{userId}")
+    public List<User> removeLike(@PathVariable Integer id, @PathVariable Integer userId){
+        log.info("attempt remove like from film {} by user {}", id, userId);
+        return filmService.removeLike(id,userId);
+    }
 
     private void validateFilm(Film film) {
         if (film.getReleaseDate().isBefore(FIRST_CINEMA_DATE) ||
