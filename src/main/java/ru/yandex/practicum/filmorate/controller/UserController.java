@@ -53,17 +53,15 @@ public class UserController {
     }
 
     @PutMapping("/{id}/friends/{friendId}")
-    public List<User> addFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
+    public void addFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
         log.info("attempt to add user {} to user's {} friend list", friendId, id);
         userService.addFriend(id, friendId);
-        return userService.getUserFriends(id);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
-    public List<User> deleteFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
+    public void deleteFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
         log.info("attempt to delete user {} from user's {} friend list", friendId, id);
         userService.deleteFriend(id, friendId);
-        return userService.getUserFriends(id);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
