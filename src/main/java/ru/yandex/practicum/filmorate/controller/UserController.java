@@ -47,7 +47,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends")
-    public List<User> getUserFriends(@PathVariable Integer id) {
+    public List<String> getUserFriends(@PathVariable Integer id) {
         log.info("attempt to get user friend list by id {}",id);
         return userService.getUserFriends(id);
     }
@@ -65,7 +65,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public List<User> getCommonFriends(@PathVariable Integer id, @PathVariable Integer otherId) {
+    public List<String> getCommonFriends(@PathVariable Integer id, @PathVariable Integer otherId) {
         log.info("attempt to find user's {} and user's {} common friends", otherId, id);
         return userService.getCommonFriends(id, otherId);
     }

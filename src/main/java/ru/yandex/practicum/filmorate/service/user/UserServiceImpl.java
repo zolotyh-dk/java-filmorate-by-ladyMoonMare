@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -44,7 +45,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public  List<User> getUserFriends(Integer id) {
+    public  List<String> getUserFriends(Integer id) {
         return new ArrayList<>(getUserById(id).getFriends());
     }
 
@@ -52,8 +53,8 @@ public class UserServiceImpl implements UserService {
     public void addFriend(Integer id, Integer friendId) {
         User user = getUserById(id);
         User friend = getUserById(friendId);
-        user.getFriends().add(friend);
-        friend.getFriends().add(user);
+        user.getFriends().add(friend.getLogin());
+        friend.getFriends().add(user.getLogin());
         log.info("user {} successfully added to friend list", friendId);
     }
 
@@ -61,20 +62,20 @@ public class UserServiceImpl implements UserService {
     public void deleteFriend(Integer id, Integer friendId) {
         User user = getUserById(id);
         User friend = getUserById(friendId);
-        user.getFriends().remove(friend);
-        friend.getFriends().remove(user);
+        user.getFriends().remove(friend.getLogin());
+        friend.getFriends().remove(user.getLogin());
         log.info("user {} successfully deleted from friend list", friendId);
     }
 
     @Override
-    public List<User> getCommonFriends(Integer id, Integer otherId) {
+    public List<String> getCommonFriends(Integer id, Integer otherId) {
         User user = getUserById(id);
         User otherUser = getUserById(otherId);
-        List<User> commonFriends = new ArrayList<>();
-        for (User u : user.getFriends()) {
-            for (User ou: otherUser.getFriends()) {
-                if (u.equals(ou)) {
-                   commonFriends.add(u);
+        List<String> commonFriends = new ArrayList<>();
+        for (String i : user.getFriends()) {
+            for (String oi: otherUser.getFriends()) {
+                if (Objects.equals(i, oi)) {
+                    commonFriends.add(i);
                 }
             }
         }
