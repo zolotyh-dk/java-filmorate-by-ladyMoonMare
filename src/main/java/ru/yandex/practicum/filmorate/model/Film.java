@@ -17,6 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Film {
+    @NotNull
     private int id;
     @NotEmpty
     @NotBlank

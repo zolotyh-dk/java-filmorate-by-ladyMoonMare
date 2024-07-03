@@ -23,11 +23,9 @@ public class User {
     @Email
     @NotBlank
     @NotEmpty
-    @NotNull
     private String email;
     @NotBlank
     @NotEmpty
-    @NotNull
     private String login;
     private String name = "";
     @NotNull
