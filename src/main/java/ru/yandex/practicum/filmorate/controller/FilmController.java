@@ -1,8 +1,10 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -16,6 +18,7 @@ import java.util.*;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@Validated
 @RequestMapping("/films")
 public class FilmController {
     private final FilmService filmService;
@@ -62,14 +65,10 @@ public class FilmController {
         return filmService.removeLike(id,userId);
     }
 
+    @Validated
     @GetMapping("/popular")
-    public List<Film> getPopularFilms(@PathVariable Optional<Integer> count) {
-        if (count.isEmpty()) {
-            count = Optional.of(10);
-        } else if (count.get() <= 0) {
-            throw new ValidationException("Number of films must be positive");
-        }
-        return filmService.getPopularFilms(count.get());
+    public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") @Positive Integer count) {
+        return filmService.getPopularFilms(count);
     }
 
     private void validateFilm(Film film) {
