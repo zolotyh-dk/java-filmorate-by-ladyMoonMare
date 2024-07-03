@@ -1,10 +1,15 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.InvalidDataException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.util.IdGenerator;
+import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.film.FilmService;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -12,70 +17,67 @@ import java.util.*;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
+@Validated
 @RequestMapping("/films")
 public class FilmController {
-    private final Map<Integer,Film> films = new HashMap<>();
-    private static final int MAX_DESCRIPTION_LENGTH = 200;
+    private final FilmService filmService;
     private static final LocalDate FIRST_CINEMA_DATE = LocalDate.parse("28.12.1895",
             DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-    private IdGenerator idGen = new IdGenerator();
+
 
     @GetMapping
     public List<Film> getAllFilms() {
-        return new ArrayList<>(films.values());
+        return filmService.getAllFilms();
     }
 
     @PostMapping
-    public Film addFilm(@RequestBody Film film) {
+    public Film addFilm(@Valid @RequestBody Film film) {
         log.info("addFilm attempt {}",film);
-
-
-        films.values()
-                .forEach(f -> {
-                    if (f.getName().equals(film.getName()) &&
-                            f.getReleaseDate().equals(film.getReleaseDate())) {
-                        log.warn("addFilm attempt failure - user {} is already uploaded",film);
-                        throw new InvalidDataException("Film is already uploaded");
-                    }
-                });
-        if (films.containsValue(film)) {
-            log.warn("addFilm attempt failure - user {} is already uploaded",film);
-            throw new InvalidDataException("Film is already uploaded");
-        }
         validateFilm(film);
-        film.setId(idGen.getId());
-        idGen.reloadId();
-        films.put(film.getId(),film);
-        log.info("addFilm {} success",film);
+        filmService.addFilm(film);
         return film;
     }
 
     @PutMapping
-    public Film updateFilm(@RequestBody Film film) {
+    public Film updateFilm(@Valid @RequestBody Film film) {
         log.info("updateFilm attempt {}",film);
-        if (!films.containsKey(film.getId())) {
-            log.warn("updateFilm failure - film {} has not been uploaded", film);
-            throw new InvalidDataException("Film has not been uploaded");
-        }
         validateFilm(film);
-        films.put(film.getId(),film);
-        log.info("updateFilm {} success",film);
+        filmService.updateFilm(film);
         return film;
     }
 
+    @GetMapping("/{id}")
+    public Film getFilmById(@PathVariable Integer id) {
+        log.info("attempt to get film by id {}",id);
+        return filmService.getFilmById(id);
+    }
+
+    @PutMapping("/{id}/like/{userId}")
+    public List<User> addLike(@PathVariable Integer id, @PathVariable Integer userId) {
+        log.info("attempt set like to film {} by user {}", id, userId);
+        return filmService.addLike(id,userId);
+    }
+
+    @DeleteMapping("/{id}/like/{userId}")
+    public List<User> removeLike(@PathVariable Integer id, @PathVariable Integer userId) {
+        log.info("attempt remove like from film {} by user {}", id, userId);
+        return filmService.removeLike(id,userId);
+    }
+
+    @Validated
+    @GetMapping("/popular")
+    public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") @Positive Integer count) {
+        return filmService.getPopularFilms(count);
+    }
+
     private void validateFilm(Film film) {
-        if (film.getName().isBlank() || film.getName().isEmpty()) {
-            log.warn("Data error - invalid title {}",film.getName());
-            throw new InvalidDataException("Invalid name");
-        } else if (film.getDescription().length() > MAX_DESCRIPTION_LENGTH) {
-            log.warn("Data error - invalid description length {}",film.getDescription().length());
-            throw new InvalidDataException("Invalid description length");
-        } else if (film.getReleaseDate().isBefore(FIRST_CINEMA_DATE) ||
+        if (film.getReleaseDate().isBefore(FIRST_CINEMA_DATE) ||
                 film.getReleaseDate().isAfter(LocalDate.now())) {
             log.warn("Data error - invalid release date {}",film.getReleaseDate());
-            throw new InvalidDataException("Invalid date");
+            throw new ValidationException("Invalid date");
         } else if (film.getDuration().toMinutes() <= 0) {
-            throw new InvalidDataException("Invalid duration");
+            throw new ValidationException("Invalid duration");
         }
     }
 }
