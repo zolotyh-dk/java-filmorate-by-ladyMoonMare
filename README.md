@@ -1,4 +1,4 @@
- #java [QuickDBD-export (3)](https://github.com/LadyMoonMare/java-filmorate/assets//QuickDBD-export%20(3).svg)
-filmorate
+ #javafilmorate
 Template repository for Filmorate project.
 	
+![QuickDBD-export](https://github.com/LadyMoonMare/java-filmorate/assets/142805079/7fafd110-c969-4f02-8855-53d88bed6936)
