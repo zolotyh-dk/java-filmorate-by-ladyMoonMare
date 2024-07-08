@@ -4,7 +4,7 @@ Template repository for Filmorate project.
 Приложение Filmorate для обмена данными о различных фильмах между пользователями
 
 Изображение БД:
-![QuickDBD-export](https://github.com/LadyMoonMare/java-filmorate/assets/142805079/7fafd110-c969-4f02-8855-53d88bed6936)
+![QuickDBD-export (1)](https://github.com/LadyMoonMare/java-filmorate/assets/142805079/697a6bae-7299-4029-b7e8-8c71d49f06c8)
 
 Приложение позволяет пользователю создать свой аккаунт, добавить другого пользователя в друзья или поставить лайк понравившемуся фильму.
 А также добавить фильм с полной информацией о нём от жанра до рейтинга MPA.
