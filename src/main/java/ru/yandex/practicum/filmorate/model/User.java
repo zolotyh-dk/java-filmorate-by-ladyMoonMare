@@ -15,8 +15,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-@NoArgsConstructor
 @NotNull
+@AllArgsConstructor
+@Builder
 public class User {
     @NotNull
     private int id;
