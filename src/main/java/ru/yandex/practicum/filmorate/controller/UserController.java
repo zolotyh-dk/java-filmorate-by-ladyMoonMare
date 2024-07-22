@@ -1,8 +1,10 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -15,6 +17,7 @@ import java.util.*;
 @RequiredArgsConstructor
 @RequestMapping("/users")
 @Slf4j
+@Validated
 public class UserController {
     private final UserService userService;
 
@@ -40,32 +43,39 @@ public class UserController {
         return user;
     }
 
+    @Validated
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable Integer id) {
+    public User getUserById(@PathVariable @Positive Integer id) {
         log.info("attempt to get user by id {}",id);
         return userService.getUserById(id);
     }
 
+    @Validated
     @GetMapping("/{id}/friends")
-    public List<User> getUserFriends(@PathVariable Integer id) {
+    public List<User> getUserFriends(@PathVariable @Positive Integer id) {
         log.info("attempt to get user friend list by id {}",id);
         return userService.getUserFriends(id);
     }
 
+    @Validated
     @PutMapping("/{id}/friends/{friendId}")
-    public void addFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
+    public void addFriend(@PathVariable @Positive Integer id, @PathVariable @Positive Integer friendId) {
         log.info("attempt to add user {} to user's {} friend list", friendId, id);
         userService.addFriend(id, friendId);
     }
 
+    @Validated
     @DeleteMapping("/{id}/friends/{friendId}")
-    public void deleteFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
+    public void deleteFriend(@PathVariable @Positive Integer id,
+                             @PathVariable @Positive Integer friendId) {
         log.info("attempt to delete user {} from user's {} friend list", friendId, id);
         userService.deleteFriend(id, friendId);
     }
 
+    @Validated
     @GetMapping("/{id}/friends/common/{otherId}")
-    public List<User> getCommonFriends(@PathVariable Integer id, @PathVariable Integer otherId) {
+    public List<User> getCommonFriends(@PathVariable @Positive Integer id,
+                                       @PathVariable @Positive Integer otherId) {
         log.info("attempt to find user's {} and user's {} common friends", otherId, id);
         return userService.getCommonFriends(id, otherId);
     }
