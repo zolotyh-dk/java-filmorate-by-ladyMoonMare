@@ -65,9 +65,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getCommonFriends(Integer id, Integer otherId) {
-        User user = getUserById(id);
-        User otherUser = getUserById(otherId);
         List<User> commonFriends = new ArrayList<>();
+
+        for (User u : fs.getFriendsFromDb(id)){
+            for(User ou : fs.getFriendsFromDb(otherId)) {
+                if (u.getId() == ou.getId()) {
+                    commonFriends.add(u);
+                }
+            }
+        }
         return commonFriends;
     }
 }

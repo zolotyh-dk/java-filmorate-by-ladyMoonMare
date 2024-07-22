@@ -23,8 +23,7 @@ public class FriendsDbStorage {
     }
 
     public void addFriend(Integer id, Integer friendId) {
-        jdbcTemplate.update("INSERT INTO friends (user_id, friend_id) VALUES (?,?);",
-                id, friendId);
+        jdbcTemplate.update("INSERT INTO friends (user_id, friend_id) VALUES (?,?);",id,friendId);
     }
 
     public void deleteFriend(Integer id, Integer friendId) {

@@ -33,6 +33,6 @@ film_id INTEGER REFERENCES films(id),
 user_id INTEGER REFERENCES app_users(id));
 
 CREATE TABLE IF NOT EXISTS friends(
-user_id INTEGER REFERENCES app_users(id),
-friend_id INTEGER REFERENCES app_users(id));
+user_id INTEGER,
+friend_id INTEGER );
 
