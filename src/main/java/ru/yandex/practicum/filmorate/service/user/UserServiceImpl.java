@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.friends.FriendsDbStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserStorage userStorage;
+    private final FriendsDbStorage fs;
 
     @Override
     public List<User> getAllUsers() {
@@ -46,19 +48,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public  List<User> getUserFriends(Integer id) {
-        List<User> friends = new ArrayList<>();
-        for (Integer i : getUserById(id).getFriends()) {
-            friends.add(getUserById(i));
-        }
-        return friends;
+        return fs.getFriendsFromDb(id);
     }
 
     @Override
     public void addFriend(Integer id, Integer friendId) {
-        User user = getUserById(id);
-        User friend = getUserById(friendId);
-        user.getFriends().add(friendId);
-        friend.getFriends().add(id);
+        fs.addFriend(id,friendId);
         log.info("user {} successfully added to friend list", friendId);
     }
 
@@ -66,8 +61,6 @@ public class UserServiceImpl implements UserService {
     public void deleteFriend(Integer id, Integer friendId) {
         User user = getUserById(id);
         User friend = getUserById(friendId);
-        user.getFriends().remove(friendId);
-        friend.getFriends().remove(id);
         log.info("user {} successfully deleted from friend list", friendId);
     }
 
@@ -76,13 +69,6 @@ public class UserServiceImpl implements UserService {
         User user = getUserById(id);
         User otherUser = getUserById(otherId);
         List<User> commonFriends = new ArrayList<>();
-        for (Integer i : user.getFriends()) {
-            for (Integer oi: otherUser.getFriends()) {
-                if (Objects.equals(i, oi)) {
-                    commonFriends.add(getUserById(i));
-                }
-            }
-        }
         return commonFriends;
     }
 }

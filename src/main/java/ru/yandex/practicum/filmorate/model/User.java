@@ -17,6 +17,7 @@ import java.util.Set;
 @Data
 @NotNull
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class User {
     @NotNull
@@ -33,8 +34,6 @@ public class User {
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate birthday;
-    private Set<Integer> friends = new HashSet<>();
-    private boolean acceptRequest = false;
 
     public User(String email, String login, LocalDate birthday) {
         name = login;

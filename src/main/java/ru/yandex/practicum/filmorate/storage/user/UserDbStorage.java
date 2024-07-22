@@ -33,8 +33,8 @@ public class UserDbStorage implements UserStorage {
 
         log.info("addUser attempt for database {}",user);
         jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO app_users (email,login," +
-                    "name,birthday) VALUES (?,?,?,?);",Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO app_users (email," +
+                    "login,name,birthday) VALUES (?,?,?,?);",Statement.RETURN_GENERATED_KEYS);
             ps.setObject(1,user.getEmail());
             ps.setObject(2, user.getLogin());
             ps.setObject(3,user.getName());
@@ -67,4 +67,5 @@ public class UserDbStorage implements UserStorage {
         return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM app_users WHERE id =" +
                 " ?;", userRowMapper,id));
     }
+
 }

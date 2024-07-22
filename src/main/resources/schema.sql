@@ -34,6 +34,5 @@ user_id INTEGER REFERENCES app_users(id));
 
 CREATE TABLE IF NOT EXISTS friends(
 user_id INTEGER REFERENCES app_users(id),
-friend_id INTEGER REFERENCES app_users(id),
-approved BOOLEAN);
+friend_id INTEGER REFERENCES app_users(id));
 
