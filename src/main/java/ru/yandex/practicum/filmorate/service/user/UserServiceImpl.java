@@ -59,8 +59,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteFriend(Integer id, Integer friendId) {
-        User user = getUserById(id);
-        User friend = getUserById(friendId);
+        fs.deleteFriend(id,friendId);
         log.info("user {} successfully deleted from friend list", friendId);
     }
 

@@ -26,4 +26,8 @@ public class FriendsDbStorage {
         jdbcTemplate.update("INSERT INTO friends (user_id, friend_id) VALUES (?,?);",
                 id, friendId);
     }
+
+    public void deleteFriend(Integer id, Integer friendId) {
+        jdbcTemplate.update("DELETE FROM friends WHERE user_id = ? AND friend_id = ?",id,friendId);
+    }
 }
