@@ -4,10 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.mappers.FilmRowMapper;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,16 +29,40 @@ public class FilmDbStorage implements FilmStorage{
 
     @Override
     public Film addFilm(Film film) {
-        return null;
+        GeneratedKeyHolder kh = new GeneratedKeyHolder();
+
+        log.info("addFilm attempt for database {}",film);
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO films (title," +
+                    "description, releaseDate, duration) VALUES (?,?,?,?);",
+                    Statement.RETURN_GENERATED_KEYS);
+            ps.setObject(1,film.getName());
+            ps.setObject(2,film.getDescription());
+            ps.setObject(3, film.getReleaseDate());
+            ps.setObject(4,film.getDuration());
+            return ps;
+        },kh);
+
+        film.setId(kh.getKeyAs(Integer.class));
+
+        return film;
     }
 
     @Override
     public Film updateFilm(Film film) {
-        return null;
+        jdbcTemplate.update("UPDATE films SET title = ?, description = ?, releaseDate = ?," +
+                        "duration = ? WHERE id = ?;",
+                film.getName(),
+                film.getDescription(),
+                film.getReleaseDate(),
+                film.getDuration(),
+                film.getId());
+        return film;
     }
 
     @Override
     public Optional<Film> findFilmById(Integer id) {
-        return Optional.empty();
+        return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM films WHERE id =" +
+                " ?;", filmRowMapper,id));
     }
 }
