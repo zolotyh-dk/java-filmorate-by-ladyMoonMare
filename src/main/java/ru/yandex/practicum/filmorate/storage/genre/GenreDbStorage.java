@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.mappers.GenreRowMapper;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -17,6 +18,11 @@ public class GenreDbStorage {
     private final GenreRowMapper grm;
 
     public List<Genre> getAllGenres() {
-        return jdbcTemplate.query("SELECT * FROM genres",grm);
+        return jdbcTemplate.query("SELECT * FROM genres", grm);
+    }
+
+    public Optional<Genre> findGenreById(Integer id) {
+        return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM genres WHERE id =" +
+                " ?;", grm, id));
     }
 }
