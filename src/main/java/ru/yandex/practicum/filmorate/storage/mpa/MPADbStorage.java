@@ -2,7 +2,7 @@ package ru.yandex.practicum.filmorate.storage.mpa;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.MPA;
 import ru.yandex.practicum.filmorate.storage.mappers.MPARowMapper;
@@ -14,7 +14,7 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class MPADbStorage implements MPAStorage {
-    private final JdbcTemplate jdbcTemplate;
+    private final JdbcOperations jdbcTemplate;
     private final MPARowMapper mrm;
 
     @Override

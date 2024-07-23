@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.storage.film;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -18,8 +18,8 @@ import java.util.Optional;
 @Component
 @Primary
 @RequiredArgsConstructor
-public class FilmDbStorage implements FilmStorage{
-    private final JdbcTemplate jdbcTemplate;
+public class FilmDbStorage implements FilmStorage {
+    private final JdbcOperations jdbcTemplate;
     private final FilmRowMapper filmRowMapper;
 
     @Override
