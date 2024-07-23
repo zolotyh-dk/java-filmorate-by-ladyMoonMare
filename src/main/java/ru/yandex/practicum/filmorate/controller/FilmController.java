@@ -56,18 +56,18 @@ public class FilmController {
 
     @Validated
     @PutMapping("/{id}/like/{userId}")
-    public List<User> addLike(@PathVariable @Positive Integer id,
+    public void addLike(@PathVariable @Positive Integer id,
                               @PathVariable @Positive Integer userId) {
         log.info("attempt set like to film {} by user {}", id, userId);
-        return filmService.addLike(id,userId);
+        filmService.addLike(id, userId);
     }
 
     @Validated
     @DeleteMapping("/{id}/like/{userId}")
-    public List<User> removeLike(@PathVariable @Positive Integer id,
+    public void removeLike(@PathVariable @Positive Integer id,
                                  @PathVariable @Positive Integer userId) {
         log.info("attempt remove like from film {} by user {}", id, userId);
-        return filmService.removeLike(id,userId);
+        filmService.removeLike(id,userId);
     }
 
     @Validated

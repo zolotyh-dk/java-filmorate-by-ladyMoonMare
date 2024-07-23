@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.user.UserService;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.like.LikeStorage;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -18,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FilmServiceImpl implements FilmService {
     private final FilmStorage filmStorage;
-    private final UserService userService;
+    private final LikeStorage ls;
 
     @Override
     public List<Film> getAllFilms() {
@@ -46,21 +47,15 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public List<User> addLike(Integer id, Integer userId) {
-        User user = userService.getUserById(userId);
-        Film film = getFilmById(id);
-        film.getLikes().add(user);
+    public void addLike(Integer id, Integer userId) {
+        ls.addLike(id, userId);
         log.info("user {} successfully liked film {}", userId, id);
-        return new ArrayList<>(film.getLikes());
     }
 
     @Override
-    public List<User> removeLike(Integer id, Integer userId) {
-        User user = userService.getUserById(userId);
-        Film film = getFilmById(id);
-        film.getLikes().remove(user);
+    public void removeLike(Integer id, Integer userId) {
+        ls.removeLike(id, userId);
         log.info("user {} successfully removed like from film {}", userId, id);
-        return new ArrayList<>(film.getLikes());
     }
 
     @Override
@@ -70,7 +65,8 @@ public class FilmServiceImpl implements FilmService {
                 .sorted(new Comparator<Film>() {
                     @Override
                     public int compare(Film o1, Film o2) {
-                        return o2.getLikes().size() - o1.getLikes().size();
+                        return ls.getLikesFromDb(o2.getId()).size() -
+                                ls.getLikesFromDb(o1.getId()).size();
                     }
                 })
                 .limit(count)

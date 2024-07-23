@@ -33,12 +33,22 @@ public class Film {
     @JsonDeserialize(using = DurationDeserializer.class)
     @NotNull
     private Duration duration;
-    private Set<User> likes = new HashSet<>();
+    private Set<Genre> genres = new HashSet<>();
+    private MPA mpa;
 
     public Film(String name, String description, LocalDate releaseDate, Duration duration) {
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
+    }
+
+    public Film(String name, String description, LocalDate releaseDate, Duration duration, Set<Genre> genres, MPA mpa) {
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        this.genres = genres;
+        this.mpa = mpa;
     }
 }

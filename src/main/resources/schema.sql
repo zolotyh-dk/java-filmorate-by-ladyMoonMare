@@ -29,10 +29,10 @@ film_id INTEGER REFERENCES films(id),
 mpa_id INTEGER REFERENCES mpa(id));
 
 CREATE TABLE IF NOT EXISTS likes(
-film_id INTEGER REFERENCES films(id),
-user_id INTEGER REFERENCES app_users(id));
+film_id INTEGER,
+user_id INTEGER);
 
 CREATE TABLE IF NOT EXISTS friends(
 user_id INTEGER,
-friend_id INTEGER );
+friend_id INTEGER);
 
