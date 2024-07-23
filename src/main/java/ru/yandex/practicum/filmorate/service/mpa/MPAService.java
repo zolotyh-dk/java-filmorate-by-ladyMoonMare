@@ -5,21 +5,25 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.model.MPA;
-import ru.yandex.practicum.filmorate.storage.mpa.MPADbStorage;
+import ru.yandex.practicum.filmorate.service.BaseService;
+import ru.yandex.practicum.filmorate.storage.mpa.MPAStorage;
+
 
 import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class MPAService {
-    private final MPADbStorage ms;
+public class MPAService implements BaseService<MPA> {
+    private final MPAStorage ms;
 
-    public List<MPA> getAllRatings() {
+    @Override
+    public List<MPA> getAll() {
         return ms.getAllRatings();
     }
 
-    public MPA getRatingById(Integer id) {
+    @Override
+    public MPA getById(Integer id) {
         return ms.findRatingById(id).orElseThrow(
                 () -> {
                     log.warn("Rating with id {} not found",id);

@@ -5,19 +5,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.friends.FriendsDbStorage;
+import ru.yandex.practicum.filmorate.storage.friends.FriendsStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserStorage userStorage;
-    private final FriendsDbStorage fs;
+    private final FriendsStorage fs;
 
     @Override
     public List<User> getAllUsers() {
@@ -67,8 +66,8 @@ public class UserServiceImpl implements UserService {
     public List<User> getCommonFriends(Integer id, Integer otherId) {
         List<User> commonFriends = new ArrayList<>();
 
-        for (User u : fs.getFriendsFromDb(id)){
-            for(User ou : fs.getFriendsFromDb(otherId)) {
+        for (User u : fs.getFriendsFromDb(id)) {
+            for (User ou : fs.getFriendsFromDb(otherId)) {
                 if (u.getId() == ou.getId()) {
                     commonFriends.add(u);
                 }
