@@ -13,14 +13,16 @@ import java.util.Optional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class MPADbStorage {
+public class MPADbStorage implements MPAStorage {
     private final JdbcTemplate jdbcTemplate;
     private final MPARowMapper mrm;
 
+    @Override
     public List<MPA> getAllRatings() {
         return jdbcTemplate.query("SELECT * FROM mpa", mrm);
     }
 
+    @Override
     public Optional<MPA> findRatingById(Integer id) {
         return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM mpa WHERE id =" +
                 " ?;", mrm, id));
