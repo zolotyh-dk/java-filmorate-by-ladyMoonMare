@@ -5,12 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.user.UserService;
+import ru.yandex.practicum.filmorate.model.MPA;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.genre.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.like.LikeStorage;
+import ru.yandex.practicum.filmorate.storage.mpa.MPAStorage;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -20,19 +20,31 @@ import java.util.List;
 public class FilmServiceImpl implements FilmService {
     private final FilmStorage filmStorage;
     private final LikeStorage ls;
+    private final MPAStorage ms;
+    private final GenreStorage gs;
 
     @Override
     public List<Film> getAllFilms() {
-        return filmStorage.getAllFilms();
+        List<Film> films = filmStorage.getAllFilms();
+        return films;
     }
 
     @Override
     public Film addFilm(Film film) {
+        film.setMpa(ms.findRatingById(film.getMpa().getId()).orElseThrow(() -> {
+            log.warn("MPA with id {} not found",film.getMpa().getId());
+            return new DataNotFoundException("MPA with id {} not found");
+        }));
         return filmStorage.addFilm(film);
     }
 
     @Override
     public Film updateFilm(Film film) {
+        Film f = getFilmById(film.getId());
+        MPA mpa = ms.findRatingById(f.getMpa().getId()).orElseThrow(() -> {
+            log.warn("MPA with id {} not found",film.getMpa().getId());
+            return new DataNotFoundException("MPA with id {} not found");
+        });
         return filmStorage.updateFilm(film);
     }
 

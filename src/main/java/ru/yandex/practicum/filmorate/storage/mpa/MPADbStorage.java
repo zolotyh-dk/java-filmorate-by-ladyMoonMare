@@ -24,7 +24,8 @@ public class MPADbStorage implements MPAStorage {
 
     @Override
     public Optional<MPA> findRatingById(Integer id) {
-        return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM mpa WHERE id =" +
+        return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM mpa WHERE mpa_id =" +
                 " ?;", mrm, id));
     }
+
 }
