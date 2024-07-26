@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.storage.mappers.GenreRowMapper;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Slf4j
 @Component

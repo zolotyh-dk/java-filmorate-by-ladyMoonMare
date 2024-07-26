@@ -30,6 +30,9 @@ public class UserDbStorage implements UserStorage {
     @Override
     public User addUser(User user) {
         GeneratedKeyHolder kh = new GeneratedKeyHolder();
+        if (user.getName().isEmpty()) {
+            user.setName(user.getLogin());
+        }
 
         log.info("addUser attempt for database {}",user);
         jdbcTemplate.update(connection -> {
@@ -42,11 +45,7 @@ public class UserDbStorage implements UserStorage {
             return ps;
         },kh);
 
-        if (user.getName().isEmpty()) {
-            user.setName(user.getLogin());
-        }
         user.setId(kh.getKeyAs(Integer.class));
-
         return user;
     }
 

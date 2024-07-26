@@ -10,7 +10,6 @@ import ru.yandex.practicum.filmorate.util.serializer.LocalDateSerializer;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 
 @Data

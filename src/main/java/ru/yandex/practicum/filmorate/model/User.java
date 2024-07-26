@@ -11,8 +11,6 @@ import ru.yandex.practicum.filmorate.util.deserializer.LocalDateDeserializer;
 import ru.yandex.practicum.filmorate.util.serializer.LocalDateSerializer;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 @Data
 @NotNull
