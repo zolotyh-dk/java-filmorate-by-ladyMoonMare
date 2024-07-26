@@ -31,6 +31,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(User user) {
+        isUserNotValid(user.getId());
         userStorage.updateUser(user);
         return user;
     }
@@ -47,17 +48,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public  List<User> getUserFriends(Integer id) {
+        isUserNotValid(id);
         return fs.getFriendsFromDb(id);
     }
 
     @Override
     public void addFriend(Integer id, Integer friendId) {
+        isUserNotValid(id);
+        isUserNotValid(friendId);
         fs.addFriend(id,friendId);
         log.info("user {} successfully added to friend list", friendId);
     }
 
     @Override
     public void deleteFriend(Integer id, Integer friendId) {
+        isUserNotValid(id);
+        isUserNotValid(friendId);
         fs.deleteFriend(id,friendId);
         log.info("user {} successfully deleted from friend list", friendId);
     }
@@ -65,6 +71,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> getCommonFriends(Integer id, Integer otherId) {
         List<User> commonFriends = new ArrayList<>();
+        isUserNotValid(id);
+        isUserNotValid(otherId);
 
         for (User u : fs.getFriendsFromDb(id)) {
             for (User ou : fs.getFriendsFromDb(otherId)) {
@@ -74,5 +82,12 @@ public class UserServiceImpl implements UserService {
             }
         }
         return commonFriends;
+    }
+
+    public void isUserNotValid(Integer id) {
+        if (userStorage.findUserById(id).isEmpty()) {
+            log.warn("User with id {} not found",id);
+            throw  new DataNotFoundException("User with id {} not found");
+        }
     }
 }
