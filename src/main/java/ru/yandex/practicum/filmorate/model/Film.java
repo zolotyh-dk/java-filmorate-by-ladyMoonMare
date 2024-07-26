@@ -34,6 +34,17 @@ public class Film {
     @NotNull
     private Duration duration;
     private MPA mpa;
+    private Set<Genre> genres;
+
+    public Film(String name, String description, LocalDate releaseDate, Duration duration, MPA mpa,
+                Set<Genre> genres) {
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        this.mpa = mpa;
+        this.genres = genres;
+    }
 
     public Film(String name, String description, LocalDate releaseDate, Duration duration) {
         this.name = name;

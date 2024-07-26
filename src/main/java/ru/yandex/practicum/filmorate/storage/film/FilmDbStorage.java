@@ -24,9 +24,8 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getAllFilms() {
-        List<Film> films = jdbcTemplate.query("SELECT * FROM films AS f " +
+        return jdbcTemplate.query("SELECT * FROM films AS f " +
                 " JOIN mpa AS m ON f.mpa_id = m.mpa_id", filmRowMapper);
-        return films;
     }
 
     @Override

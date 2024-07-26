@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.storage.mappers.GenreRowMapper;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 @Component
@@ -24,5 +25,22 @@ public class GenreDbStorage implements GenreStorage {
     public Optional<Genre> findGenreById(Integer id) {
         return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM genres WHERE id =" +
                 " ?;", grm, id));
+    }
+
+    @Override
+    public List<Genre> getGenresByFilmId(Integer filmId) {
+        return jdbcTemplate.query("SELECT * FROM genres AS g JOIN film_genre AS fg " +
+                "ON g.id = fg.genre_id WHERE film_id = ?;", grm, filmId);
+    }
+
+    @Override
+    public void addFilmGenre(Integer filmId, Integer genreId) {
+        jdbcTemplate.update("INSERT INTO film_genre (film_id, genre_id) VALUES (?,?);", filmId,
+                genreId);
+    }
+
+    @Override
+    public void removeFilmGenre(Integer filmId) {
+        jdbcTemplate.update("DELETE FROM film_genre WHERE film_id = ?;",filmId);
     }
 }
