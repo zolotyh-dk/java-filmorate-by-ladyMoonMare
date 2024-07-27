@@ -42,4 +42,9 @@ public class GenreDbStorage implements GenreStorage {
     public void removeFilmGenre(Integer filmId) {
         jdbcTemplate.update("DELETE FROM film_genre WHERE film_id = ?;",filmId);
     }
+
+    @Override
+    public Integer getNumberOfGenres() {
+        return jdbcTemplate.queryForObject("SELECT COUNT(id) FROM genres;",Integer.class);
+    }
 }

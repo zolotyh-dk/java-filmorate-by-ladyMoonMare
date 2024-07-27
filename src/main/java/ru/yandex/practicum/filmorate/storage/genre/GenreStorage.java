@@ -15,4 +15,6 @@ public interface GenreStorage {
     void addFilmGenre(Integer filmId, Integer genreId);
 
     void removeFilmGenre(Integer filmId);
+
+    Integer getNumberOfGenres();
 }

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.service.BaseService;
 
@@ -33,5 +34,12 @@ public class GenreController {
     public Genre getGenreById(@PathVariable @Positive Integer id) {
         log.info("attempt to get genre by id {}", id);
         return gs.getById(id);
+    }
+
+    public void validate (Integer id) {
+        if (id < 1 || id > gs.getNumberOf()) {
+            log.warn("Data error - invalid genre id {}",id);
+            throw new ValidationException("Invalid genre id");
+        }
     }
 }

@@ -30,4 +30,9 @@ public class GenreService implements BaseService<Genre> {
                 }
         );
     }
+
+    @Override
+    public Integer getNumberOf() {
+        return gs.getNumberOfGenres();
+    }
 }

@@ -1,20 +1,20 @@
 INSERT INTO genres (name)
-VALUES ('Комедия.');
+VALUES ('Комедия');
 
 INSERT INTO genres (name)
-VALUES ('Драма.');
+VALUES ('Драма');
 
 INSERT INTO genres (name)
-VALUES ('Мультфильм.');
+VALUES ('Мультфильм');
 
 INSERT INTO genres (name)
-VALUES ('Триллер.');
+VALUES ('Триллер');
 
 INSERT INTO genres (name)
-VALUES ('Документальный.');
+VALUES ('Документальный');
 
 INSERT INTO genres (name)
-VALUES ('Боевик.');
+VALUES ('Боевик');
 
 INSERT INTO mpa (rating)
 VALUES ('G');

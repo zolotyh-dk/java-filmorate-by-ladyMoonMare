@@ -6,4 +6,6 @@ public interface BaseService<T> {
     List<T> getAll();
 
     T getById(Integer id);
+
+    Integer getNumberOf();
 }
