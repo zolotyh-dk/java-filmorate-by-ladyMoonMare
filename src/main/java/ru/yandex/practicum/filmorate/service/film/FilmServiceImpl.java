@@ -26,7 +26,14 @@ public class FilmServiceImpl implements FilmService {
     public List<Film> getAllFilms() {
         List<Film> films = filmStorage.getAllFilms();
         for (Film film : films) {
-            film.setGenres(new LinkedHashSet<>(gs.getGenresByFilmId(film.getId())));
+            film.setGenres(new LinkedHashSet<>(gs.getGenresByFilmId(film.getId())
+                    .stream().sorted(new Comparator<Genre>() {
+                        @Override
+                        public int compare(Genre o1, Genre o2) {
+                            return o2.getId() - o1.getId();
+                        }
+                    })
+                    .toList()));
         }
         return films;
     }
