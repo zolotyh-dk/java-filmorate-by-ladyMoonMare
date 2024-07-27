@@ -2,8 +2,10 @@ package ru.yandex.practicum.filmorate.storage.mpa;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.model.MPA;
 import ru.yandex.practicum.filmorate.storage.mappers.MPARowMapper;
 
@@ -24,8 +26,13 @@ public class MPADbStorage implements MPAStorage {
 
     @Override
     public Optional<MPA> findRatingById(Integer id) {
-        return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM mpa WHERE mpa_id =" +
-                " ?;", mrm, id));
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM mpa WHERE mpa_id =" +
+                    " ?;", mrm, id));
+        } catch (EmptyResultDataAccessException e) {
+            log.warn("mpa with id {} not found",id);
+            throw  new DataNotFoundException("mpa with id {} not found");
+        }
     }
 
     @Override
