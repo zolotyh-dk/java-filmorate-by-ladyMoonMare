@@ -40,7 +40,7 @@ public class FilmDbStorage implements FilmStorage {
             ps.setObject(1,film.getName());
             ps.setObject(2,film.getDescription());
             ps.setObject(3, film.getReleaseDate());
-            ps.setObject(4,film.getDuration());
+            ps.setObject(4,film.getDuration().toMinutes());
             ps.setObject(5,film.getMpa().getId());
             return ps;
         },kh);

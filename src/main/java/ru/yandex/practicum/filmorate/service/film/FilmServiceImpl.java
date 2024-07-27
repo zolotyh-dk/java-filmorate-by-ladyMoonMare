@@ -61,19 +61,22 @@ public class FilmServiceImpl implements FilmService {
             log.warn("MPA with id {} not found",film.getMpa().getId());
             return new DataNotFoundException("MPA with id {} not found");
         }));
-
-        gs.removeFilmGenre(film.getId());
-        Set<Genre> updateGenres = new HashSet<>();
-        for (Genre genre : film.getGenres()) {
-            updateGenres.add(gs.findGenreById(genre.getId()).orElseThrow(
-                    () -> {
-                        log.warn("Genre with id {} not found",genre.getId());
-                        return new DataNotFoundException("Genre with id {} not found");
-                    })
-            );
-            gs.addFilmGenre(film.getId(), genre.getId());
+        if (film.getGenres() != null) {
+            gs.removeFilmGenre(film.getId());
+            Set<Genre> updateGenres = new HashSet<>();
+            for (Genre genre : film.getGenres()) {
+                updateGenres.add(gs.findGenreById(genre.getId()).orElseThrow(
+                        () -> {
+                            log.warn("Genre with id {} not found", genre.getId());
+                            return new DataNotFoundException("Genre with id {} not found");
+                        })
+                );
+                gs.addFilmGenre(film.getId(), genre.getId());
+            }
+            film.setGenres(updateGenres);
+        } else {
+            film.setGenres(new LinkedHashSet<>(gs.getGenresByFilmId(film.getId())));
         }
-        film.setGenres(updateGenres);
         return filmStorage.updateFilm(film);
     }
 
@@ -85,7 +88,7 @@ public class FilmServiceImpl implements FilmService {
                     return new DataNotFoundException("Film with id {} not found");
                 }
         );
-        film.setGenres(new LinkedHashSet<>(gs.getGenresByFilmId(id)));
+        film.setGenres(new HashSet<>(gs.getGenresByFilmId(id)));
         return film;
     }
 

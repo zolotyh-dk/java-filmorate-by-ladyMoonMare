@@ -8,7 +8,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.service.film.FilmService;
+import ru.yandex.practicum.filmorate.service.genre.GenreService;
+import ru.yandex.practicum.filmorate.service.mpa.MPAService;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -21,6 +24,8 @@ import java.util.*;
 @RequestMapping("/films")
 public class FilmController {
     private final FilmService filmService;
+    private final MPAService ms;
+    private final GenreService gs;
     private static final LocalDate FIRST_CINEMA_DATE = LocalDate.parse("28.12.1895",
             DateTimeFormatter.ofPattern("dd.MM.yyyy"));
 
@@ -81,7 +86,20 @@ public class FilmController {
             log.warn("Data error - invalid release date {}",film.getReleaseDate());
             throw new ValidationException("Invalid date");
         } else if (film.getDuration().toMinutes() <= 0) {
+            log.warn("Data error - invalid duration {}",film.getDuration());
             throw new ValidationException("Invalid duration");
+        } else if (film.getMpa().getId() < 1 || film.getMpa().getId() > ms.getNumberOf()) {
+            log.warn("Data error - invalid mpa id {}",film.getMpa().getId());
+            throw new ValidationException("Invalid mpa id");
+        }
+
+        if (film.getGenres() != null) {
+            for (Genre genre : film.getGenres()) {
+                if (genre.getId() < 1 || genre.getId() > gs.getNumberOf()) {
+                    log.warn("Data error - invalid genre id {}",genre.getId());
+                    throw new ValidationException("Invalid genre id");
+                }
+            }
         }
     }
 }

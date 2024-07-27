@@ -33,14 +33,7 @@ public class GenreController {
     @GetMapping("/{id}")
     public Genre getGenreById(@PathVariable @Positive Integer id) {
         log.info("attempt to get genre by id {}", id);
-        validate(id);
         return gs.getById(id);
     }
 
-    public void validate(Integer id) {
-        if (id < 1 || id > gs.getNumberOf()) {
-            log.warn("Data error - invalid genre id {}",id);
-            throw new ValidationException("Invalid genre id");
-        }
-    }
 }
