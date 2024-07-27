@@ -77,12 +77,14 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public Film getFilmById(Integer id) {
-        return filmStorage.findFilmById(id).orElseThrow(
+        Film film = filmStorage.findFilmById(id).orElseThrow(
                 () -> {
                     log.warn("Film with id {} not found",id);
                     return new DataNotFoundException("Film with id {} not found");
                 }
         );
+        film.setGenres(new LinkedHashSet<>(gs.getGenresByFilmId(id)));
+        return film;
     }
 
     @Override
@@ -99,8 +101,7 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public List<Film> getPopularFilms(Integer count) {
-        List<Film> allFilms = filmStorage.getAllFilms();
-        return allFilms.stream()
+        List<Film> popularFilms = filmStorage.getAllFilms().stream()
                 .sorted(new Comparator<Film>() {
                     @Override
                     public int compare(Film o1, Film o2) {
@@ -110,5 +111,10 @@ public class FilmServiceImpl implements FilmService {
                 })
                 .limit(count)
                 .toList();
+
+        for (Film film : popularFilms) {
+            film.setGenres(new HashSet<>(gs.getGenresByFilmId(film.getId())));
+        }
+        return popularFilms;
     }
 }
