@@ -28,4 +28,8 @@ public class MPADbStorage implements MPAStorage {
                 " ?;", mrm, id));
     }
 
+    @Override
+    public Integer getNumberOfMpa() {
+        return jdbcTemplate.queryForObject("SELECT COUNT(id) FROM mpa;",Integer.class);
+    }
 }

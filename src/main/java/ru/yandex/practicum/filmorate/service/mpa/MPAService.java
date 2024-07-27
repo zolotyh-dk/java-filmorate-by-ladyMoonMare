@@ -31,4 +31,9 @@ public class MPAService implements BaseService<MPA> {
                 }
         );
     }
+
+    @Override
+    public Integer getNumberOf() {
+        return ms.getNumberOfMpa();
+    }
 }

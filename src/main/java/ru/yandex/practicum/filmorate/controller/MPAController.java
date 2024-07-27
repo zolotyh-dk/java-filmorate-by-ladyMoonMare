@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.MPA;
 import ru.yandex.practicum.filmorate.service.BaseService;
 
@@ -32,5 +33,12 @@ public class MPAController {
     public MPA getGenreById(@PathVariable @Positive Integer id) {
         log.info("attempt to get rating by id {}", id);
         return ms.getById(id);
+    }
+
+    public void validate (Integer id) {
+        if (id < 1 || id > ms.getNumberOf()) {
+            log.warn("Data error - invalid mpa id {}",id);
+            throw new ValidationException("Invalid mpa id");
+        }
     }
 }

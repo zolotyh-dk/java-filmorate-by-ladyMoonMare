@@ -9,4 +9,6 @@ public interface MPAStorage {
     List<MPA> getAllRatings();
 
     Optional<MPA> findRatingById(Integer id);
+
+    Integer getNumberOfMpa();
 }
