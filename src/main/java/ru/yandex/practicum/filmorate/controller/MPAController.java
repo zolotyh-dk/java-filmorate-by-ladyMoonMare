@@ -35,7 +35,7 @@ public class MPAController {
         return ms.getById(id);
     }
 
-    public void validate (Integer id) {
+    public void validate(Integer id) {
         if (id < 1 || id > ms.getNumberOf()) {
             log.warn("Data error - invalid mpa id {}",id);
             throw new ValidationException("Invalid mpa id");
