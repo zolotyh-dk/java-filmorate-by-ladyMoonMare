@@ -11,10 +11,7 @@ import ru.yandex.practicum.filmorate.storage.genre.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.like.LikeStorage;
 import ru.yandex.practicum.filmorate.storage.mpa.MPAStorage;
 
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -36,7 +33,7 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public Film addFilm(Film film) {
-        Set<Genre> genres = new HashSet<>();
+        Set<Genre> genres = new LinkedHashSet<>();
         film.setMpa(ms.findRatingById(film.getMpa().getId()).orElseThrow(() -> {
             log.warn("MPA with id {} not found",film.getMpa().getId());
             return new DataNotFoundException("MPA with id {} not found");
