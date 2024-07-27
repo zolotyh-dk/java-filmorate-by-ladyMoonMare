@@ -22,7 +22,7 @@ public class FilmRowMapper implements RowMapper<Film> {
                 .duration(Duration.parse("PT" + rs.getString("duration") + "M"))
                 .mpa(MPA.builder()
                        .id(rs.getInt("mpa_id"))
-                        .rating(rs.getString("rating")).build())
+                        .name(rs.getString("rating")).build())
                 .build();
     }
 }
