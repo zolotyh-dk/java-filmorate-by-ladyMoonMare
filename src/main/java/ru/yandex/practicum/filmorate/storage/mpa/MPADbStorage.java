@@ -37,6 +37,6 @@ public class MPADbStorage implements MPAStorage {
 
     @Override
     public Integer getNumberOfMpa() {
-        return jdbcTemplate.queryForObject("SELECT COUNT(id) FROM mpa;",Integer.class);
+        return jdbcTemplate.queryForObject("SELECT COUNT(mpa_id) FROM mpa;",Integer.class);
     }
 }

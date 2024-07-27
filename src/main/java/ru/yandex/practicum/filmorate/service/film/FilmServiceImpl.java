@@ -39,16 +39,18 @@ public class FilmServiceImpl implements FilmService {
             return new DataNotFoundException("MPA with id {} not found");
         }));
         Film f =  filmStorage.addFilm(film);
-        for (Genre genre : f.getGenres()) {
-            genres.add(gs.findGenreById(genre.getId()).orElseThrow(
-                    () -> {
-                        log.warn("Genre with id {} not found",genre.getId());
-                        return new DataNotFoundException("Genre with id {} not found");
-                    })
-            );
-            gs.addFilmGenre(f.getId(), genre.getId());
+        if (f.getGenres() != null){
+            for (Genre genre : f.getGenres()) {
+                genres.add(gs.findGenreById(genre.getId()).orElseThrow(
+                        () -> {
+                            log.warn("Genre with id {} not found",genre.getId());
+                            return new DataNotFoundException("Genre with id {} not found");
+                        })
+                );
+                gs.addFilmGenre(f.getId(), genre.getId());
+            }
+            f.setGenres(genres);
         }
-        f.setGenres(genres);
         return f;
     }
 
