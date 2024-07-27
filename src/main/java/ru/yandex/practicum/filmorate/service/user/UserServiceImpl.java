@@ -31,9 +31,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(User user) {
-        isUserNotValid(user.getId());
-        userStorage.updateUser(user);
-        return user;
+        User u = getUserById(user.getId());
+        userStorage.updateUser(u);
+        return u;
     }
 
     @Override
@@ -48,46 +48,39 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public  List<User> getUserFriends(Integer id) {
-        isUserNotValid(id);
-        return fs.getFriendsFromDb(id);
+        User user = getUserById(id);
+        return fs.getFriendsFromDb(user.getId());
     }
 
     @Override
     public void addFriend(Integer id, Integer friendId) {
-        isUserNotValid(id);
-        isUserNotValid(friendId);
-        fs.addFriend(id,friendId);
+        User user = getUserById(id);
+        User friend = getUserById(friendId);
+        fs.addFriend(user.getId(), friend.getId());
         log.info("user {} successfully added to friend list", friendId);
     }
 
     @Override
     public void deleteFriend(Integer id, Integer friendId) {
-        isUserNotValid(id);
-        isUserNotValid(friendId);
-        fs.deleteFriend(id,friendId);
+        User user = getUserById(id);
+        User friend = getUserById(friendId);
+        fs.deleteFriend(user.getId(), friend.getId());
         log.info("user {} successfully deleted from friend list", friendId);
     }
 
     @Override
     public List<User> getCommonFriends(Integer id, Integer otherId) {
         List<User> commonFriends = new ArrayList<>();
-        isUserNotValid(id);
-        isUserNotValid(otherId);
+        User user = getUserById(id);
+        User otherUser = getUserById(otherId);
 
-        for (User u : fs.getFriendsFromDb(id)) {
-            for (User ou : fs.getFriendsFromDb(otherId)) {
+        for (User u : fs.getFriendsFromDb(user.getId())) {
+            for (User ou : fs.getFriendsFromDb(otherUser.getId())) {
                 if (u.getId() == ou.getId()) {
                     commonFriends.add(u);
                 }
             }
         }
         return commonFriends;
-    }
-
-    public void isUserNotValid(Integer id) {
-        if (userStorage.findUserById(id).isEmpty()) {
-            log.warn("User with id {} not found",id);
-            throw  new DataNotFoundException("User with id {} not found");
-        }
     }
 }

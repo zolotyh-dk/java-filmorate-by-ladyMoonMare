@@ -3,9 +3,11 @@ package ru.yandex.practicum.filmorate.storage.user;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.mappers.UserRowMapper;
 
@@ -63,8 +65,13 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public Optional<User> findUserById(Integer id) {
-        return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM app_users WHERE id =" +
-                " ?;", userRowMapper,id));
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM app_users WHERE id =" +
+                    " ?;", userRowMapper,id));
+        } catch (EmptyResultDataAccessException e) {
+            log.warn("User with id {} not found",id);
+            throw  new DataNotFoundException("User with id {} not found");
+        }
     }
 
 }
