@@ -30,7 +30,7 @@ public class FilmServiceImpl implements FilmService {
                     .stream().sorted(new Comparator<Genre>() {
                         @Override
                         public int compare(Genre o1, Genre o2) {
-                            return o2.getId() - o1.getId();
+                            return o1.getId() - o2.getId();
                         }
                     })
                     .toList()));
