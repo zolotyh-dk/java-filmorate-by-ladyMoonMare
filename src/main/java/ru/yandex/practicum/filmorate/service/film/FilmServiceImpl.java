@@ -21,18 +21,19 @@ public class FilmServiceImpl implements FilmService {
     private final LikeStorage ls;
     private final MPAStorage ms;
     private final GenreStorage gs;
+    private  final Comparator<Genre> comparator = new Comparator<Genre>() {
+        @Override
+        public int compare(Genre o1, Genre o2) {
+            return o1.getId() - o2.getId();
+        }
+    };
 
     @Override
     public List<Film> getAllFilms() {
         List<Film> films = filmStorage.getAllFilms();
         for (Film film : films) {
             film.setGenres(new LinkedHashSet<>(gs.getGenresByFilmId(film.getId())
-                    .stream().sorted(new Comparator<Genre>() {
-                        @Override
-                        public int compare(Genre o1, Genre o2) {
-                            return o1.getId() - o2.getId();
-                        }
-                    })
+                    .stream().sorted(comparator)
                     .toList()));
         }
         return films;
@@ -95,7 +96,7 @@ public class FilmServiceImpl implements FilmService {
                     return new DataNotFoundException("Film with id {} not found");
                 }
         );
-        film.setGenres(new HashSet<>(gs.getGenresByFilmId(id)));
+        film.setGenres(new LinkedHashSet<>(gs.getGenresByFilmId(id).stream().sorted(comparator).toList()));
         return film;
     }
 
