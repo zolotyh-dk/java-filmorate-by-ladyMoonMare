@@ -10,7 +10,7 @@ import ru.yandex.practicum.filmorate.util.serializer.LocalDateSerializer;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.LinkedHashSet;
 
 @Data
 @AllArgsConstructor
@@ -33,10 +33,10 @@ public class Film {
     @NotNull
     private Duration duration;
     private MPA mpa;
-    private Set<Genre> genres;
+    private LinkedHashSet<Genre> genres = new LinkedHashSet<>();
 
     public Film(String name, String description, LocalDate releaseDate, Duration duration, MPA mpa,
-                Set<Genre> genres) {
+                LinkedHashSet<Genre> genres) {
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;

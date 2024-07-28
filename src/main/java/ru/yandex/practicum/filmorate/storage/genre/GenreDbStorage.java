@@ -84,8 +84,8 @@ public class GenreDbStorage implements GenreStorage {
 
                 });
         f.values().forEach(film -> {
-            film.setGenres(film.getGenres().stream()
-                    .sorted(comparator).collect(Collectors.toSet()));
+            film.setGenres(new LinkedHashSet<>(film.getGenres().stream()
+                    .sorted(comparator).collect(Collectors.toSet())));
         });
         return new ArrayList<>(f.values());
     }
@@ -93,9 +93,9 @@ public class GenreDbStorage implements GenreStorage {
     @Override
     public Film setGenresToFilm(Film film) {
         Map<Integer, Genre> genres = new HashMap<>();
-        film.setGenres(new LinkedHashSet<>());
         getAllGenres().forEach(genre -> genres.put(genre.getId(), genre));
         List<Genre> newGenres = new ArrayList<>(film.getGenres());
+        film.setGenres(new LinkedHashSet<>());
         newGenres.forEach(genre -> {
             if (!genres.containsKey(genre.getId())) {
                 log.warn("genre with id {} not found",genre.getId());
@@ -118,7 +118,8 @@ public class GenreDbStorage implements GenreStorage {
                         return newGenres.size();
                     }
                 });
-        film.setGenres(film.getGenres().stream().sorted(comparator).collect(Collectors.toSet()));
+        film.setGenres(new LinkedHashSet<>(film.getGenres().stream().sorted(comparator)
+                .collect(Collectors.toSet())));
         return film;
     }
 
