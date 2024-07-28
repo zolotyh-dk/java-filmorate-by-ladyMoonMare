@@ -118,8 +118,6 @@ public class GenreDbStorage implements GenreStorage {
                         return newGenres.size();
                     }
                 });
-        film.setGenres(new LinkedHashSet<>(film.getGenres().stream().sorted(comparator)
-                .collect(Collectors.toSet())));
         return film;
     }
 
