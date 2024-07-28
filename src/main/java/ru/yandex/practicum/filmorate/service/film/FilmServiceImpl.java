@@ -31,57 +31,29 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public List<Film> getAllFilms() {
         List<Film> films = filmStorage.getAllFilms();
-        for (Film film : films) {
-            film.setGenres(new LinkedHashSet<>(gs.getGenresByFilmId(film.getId())
-                    .stream().sorted(comparator)
-                    .toList()));
-        }
-        return films;
+        return gs.loadGenres(films);
     }
 
     @Override
     public Film addFilm(Film film) {
-        Set<Genre> genres = new LinkedHashSet<>();
         film.setMpa(ms.findRatingById(film.getMpa().getId()).orElseThrow(() -> {
             log.warn("MPA with id {} not found",film.getMpa().getId());
             return new DataNotFoundException("MPA with id {} not found");
         }));
         Film f =  filmStorage.addFilm(film);
-        if (f.getGenres() != null) {
-            for (Genre genre : f.getGenres()) {
-                genres.add(gs.findGenreById(genre.getId()).orElseThrow(
-                        () -> {
-                            log.warn("Genre with id {} not found",genre.getId());
-                            return new DataNotFoundException("Genre with id {} not found");
-                        })
-                );
-                gs.addFilmGenre(f.getId(), genre.getId());
-            }
-            f.setGenres(genres);
-        }
-        return f;
+        return gs.setGenresToFilm(f);
     }
 
     @Override
     public Film updateFilm(Film film) {
-        Film f = getFilmById(film.getId());
+        getFilmById(film.getId());
         film.setMpa(ms.findRatingById(film.getMpa().getId()).orElseThrow(() -> {
             log.warn("MPA with id {} not found",film.getMpa().getId());
             return new DataNotFoundException("MPA with id {} not found");
         }));
         if (film.getGenres() != null) {
             gs.removeFilmGenre(film.getId());
-            Set<Genre> updateGenres = new HashSet<>();
-            for (Genre genre : film.getGenres()) {
-                updateGenres.add(gs.findGenreById(genre.getId()).orElseThrow(
-                        () -> {
-                            log.warn("Genre with id {} not found", genre.getId());
-                            return new DataNotFoundException("Genre with id {} not found");
-                        })
-                );
-                gs.addFilmGenre(film.getId(), genre.getId());
-            }
-            film.setGenres(updateGenres);
+            gs.setGenresToFilm(film);
         } else {
             film.setGenres(new LinkedHashSet<>(gs.getGenresByFilmId(film.getId())));
         }
@@ -96,7 +68,8 @@ public class FilmServiceImpl implements FilmService {
                     return new DataNotFoundException("Film with id {} not found");
                 }
         );
-        film.setGenres(new LinkedHashSet<>(gs.getGenresByFilmId(id).stream().sorted(comparator).toList()));
+        film.setGenres(new LinkedHashSet<>(gs.getGenresByFilmId(id).stream().sorted(comparator)
+                .toList()));
         return film;
     }
 
@@ -125,9 +98,6 @@ public class FilmServiceImpl implements FilmService {
                 .limit(count)
                 .toList();
 
-        for (Film film : popularFilms) {
-            film.setGenres(new HashSet<>(gs.getGenresByFilmId(film.getId())));
-        }
-        return popularFilms;
+        return gs.loadGenres(popularFilms);
     }
 }

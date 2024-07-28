@@ -3,14 +3,18 @@ package ru.yandex.practicum.filmorate.storage.genre;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.mappers.GenreRowMapper;
 
-import java.util.List;
-import java.util.Optional;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -18,6 +22,12 @@ import java.util.Optional;
 public class GenreDbStorage implements GenreStorage {
     private final JdbcOperations jdbcTemplate;
     private final GenreRowMapper grm;
+    private  final Comparator<Genre> comparator = new Comparator<Genre>() {
+        @Override
+        public int compare(Genre o1, Genre o2) {
+            return o1.getId() - o2.getId();
+        }
+    };
 
     public List<Genre> getAllGenres() {
         return jdbcTemplate.query("SELECT * FROM genres", grm);
@@ -54,4 +64,62 @@ public class GenreDbStorage implements GenreStorage {
     public Integer getNumberOfGenres() {
         return jdbcTemplate.queryForObject("SELECT COUNT(id) FROM genres;",Integer.class);
     }
+
+    @Override
+    public List<Film> loadGenres(List<Film> films) {
+        Map<Integer, Genre> genres = new HashMap<>();
+        Map<Integer, Film> f = new HashMap<>();
+        films.forEach(film -> {
+            film.setGenres(new LinkedHashSet<>());
+            f.put(film.getId(), film);
+        });
+        getAllGenres().forEach(genre -> genres.put(genre.getId(), genre));
+        jdbcTemplate.query("SELECT * FROM film_genre",
+                (rs) -> {
+                    while (rs.next()) {
+                        Integer filmId = rs.getInt("film_id");
+                        f.get(filmId).getGenres().add(genres.get(rs.getInt("genre_id")));
+
+                    }
+
+                });
+        f.values().forEach(film -> {
+            film.setGenres(film.getGenres().stream()
+                    .sorted(comparator).collect(Collectors.toSet()));
+        });
+        return new ArrayList<>(f.values());
+    }
+
+    @Override
+    public Film setGenresToFilm(Film film) {
+        Map<Integer, Genre> genres = new HashMap<>();
+        film.setGenres(new LinkedHashSet<>());
+        getAllGenres().forEach(genre -> genres.put(genre.getId(), genre));
+        List<Genre> newGenres = new ArrayList<>(film.getGenres());
+        newGenres.forEach(genre -> {
+            if (!genres.containsKey(genre.getId())) {
+                log.warn("genre with id {} not found",genre.getId());
+                throw  new DataNotFoundException("genre with id {} not found");
+            } else {
+                film.getGenres().add(genres.get(genre.getId()));
+            }
+        });
+
+        jdbcTemplate.batchUpdate("INSERT INTO film_genre (film_id, genre_id) VALUES (?,?);",
+                new BatchPreparedStatementSetter() {
+                    @Override
+                    public void setValues(PreparedStatement ps, int i) throws SQLException {
+                        ps.setInt(1, film.getId());
+                        ps.setInt(2,newGenres.get(i).getId());
+                    }
+
+                    @Override
+                    public int getBatchSize() {
+                        return newGenres.size();
+                    }
+                });
+        film.setGenres(film.getGenres().stream().sorted(comparator).collect(Collectors.toSet()));
+        return film;
+    }
+
 }
