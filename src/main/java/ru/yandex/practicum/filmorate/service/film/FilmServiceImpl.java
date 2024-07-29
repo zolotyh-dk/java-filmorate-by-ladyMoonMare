@@ -41,7 +41,9 @@ public class FilmServiceImpl implements FilmService {
             return new DataNotFoundException("MPA with id {} not found");
         }));
         filmStorage.addFilm(film);
-        gs.setGenresToFilm(film);
+        if (film.getGenres() != null) {
+            gs.setGenresToFilm(film);
+        }
         return film;
     }
 
