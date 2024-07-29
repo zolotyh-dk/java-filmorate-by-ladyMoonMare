@@ -100,7 +100,7 @@ public class FilmServiceImpl implements FilmService {
                 })
                 .limit(count)
                 .toList();
-
-        return gs.loadGenres(popularFilms);
+        gs.loadGenres(popularFilms);
+        return popularFilms;
     }
 }
