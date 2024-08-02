@@ -11,12 +11,12 @@ import ru.yandex.practicum.filmorate.util.deserializer.LocalDateDeserializer;
 import ru.yandex.practicum.filmorate.util.serializer.LocalDateSerializer;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 @Data
-@NoArgsConstructor
 @NotNull
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class User {
     @NotNull
     private int id;
@@ -32,7 +32,6 @@ public class User {
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate birthday;
-    private Set<Integer> friends = new HashSet<>();
 
     public User(String email, String login, LocalDate birthday) {
         name = login;

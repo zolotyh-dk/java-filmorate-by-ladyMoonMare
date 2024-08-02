@@ -5,75 +5,102 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.DataNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.user.UserService;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.genre.GenreStorage;
+import ru.yandex.practicum.filmorate.storage.like.LikeStorage;
+import ru.yandex.practicum.filmorate.storage.mpa.MPAStorage;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class FilmServiceImpl implements FilmService {
     private final FilmStorage filmStorage;
-    private final UserService userService;
+    private final LikeStorage ls;
+    private final MPAStorage ms;
+    private final GenreStorage gs;
+    private  final Comparator<Genre> comparator = new Comparator<Genre>() {
+        @Override
+        public int compare(Genre o1, Genre o2) {
+            return o1.getId() - o2.getId();
+        }
+    };
 
     @Override
     public List<Film> getAllFilms() {
-        return filmStorage.getAllFilms();
+        List<Film> films = filmStorage.getAllFilms();
+        return gs.loadGenres(films);
     }
 
     @Override
     public Film addFilm(Film film) {
-        return filmStorage.addFilm(film);
+        film.setMpa(ms.findRatingById(film.getMpa().getId()).orElseThrow(() -> {
+            log.warn("MPA with id {} not found",film.getMpa().getId());
+            return new DataNotFoundException("MPA with id {} not found");
+        }));
+        filmStorage.addFilm(film);
+        if (film.getGenres() != null) {
+            gs.setGenresToFilm(film);
+        }
+        return film;
     }
 
     @Override
     public Film updateFilm(Film film) {
+        getFilmById(film.getId());
+        film.setMpa(ms.findRatingById(film.getMpa().getId()).orElseThrow(() -> {
+            log.warn("MPA with id {} not found",film.getMpa().getId());
+            return new DataNotFoundException("MPA with id {} not found");
+        }));
+        if (film.getGenres() != null) {
+            gs.removeFilmGenre(film.getId());
+            gs.setGenresToFilm(film);
+        } else {
+            film.setGenres(new LinkedHashSet<>(gs.getGenresByFilmId(film.getId())));
+        }
         return filmStorage.updateFilm(film);
     }
 
     @Override
     public Film getFilmById(Integer id) {
-        return filmStorage.findFilmById(id).orElseThrow(
+        Film film = filmStorage.findFilmById(id).orElseThrow(
                 () -> {
                     log.warn("Film with id {} not found",id);
                     return new DataNotFoundException("Film with id {} not found");
                 }
         );
+        film.setGenres(new LinkedHashSet<>(gs.getGenresByFilmId(id).stream().sorted(comparator)
+                .toList()));
+        return film;
     }
 
     @Override
-    public List<User> addLike(Integer id, Integer userId) {
-        User user = userService.getUserById(userId);
-        Film film = getFilmById(id);
-        film.getLikes().add(user);
+    public void addLike(Integer id, Integer userId) {
+        ls.addLike(id, userId);
         log.info("user {} successfully liked film {}", userId, id);
-        return new ArrayList<>(film.getLikes());
     }
 
     @Override
-    public List<User> removeLike(Integer id, Integer userId) {
-        User user = userService.getUserById(userId);
-        Film film = getFilmById(id);
-        film.getLikes().remove(user);
+    public void removeLike(Integer id, Integer userId) {
+        ls.removeLike(id, userId);
         log.info("user {} successfully removed like from film {}", userId, id);
-        return new ArrayList<>(film.getLikes());
     }
 
     @Override
     public List<Film> getPopularFilms(Integer count) {
-        List<Film> allFilms = filmStorage.getAllFilms();
-        return allFilms.stream()
+        List<Film> popularFilms = filmStorage.getAllFilms().stream()
                 .sorted(new Comparator<Film>() {
                     @Override
                     public int compare(Film o1, Film o2) {
-                        return o2.getLikes().size() - o1.getLikes().size();
+                        return ls.getLikesFromDb(o2.getId()).size() -
+                                ls.getLikesFromDb(o1.getId()).size();
                     }
                 })
                 .limit(count)
                 .toList();
+        gs.loadGenres(popularFilms);
+        return popularFilms;
     }
 }

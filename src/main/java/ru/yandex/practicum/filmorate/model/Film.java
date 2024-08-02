@@ -10,12 +10,12 @@ import ru.yandex.practicum.filmorate.util.serializer.LocalDateSerializer;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedHashSet;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Film {
     @NotNull
     private int id;
@@ -32,12 +32,31 @@ public class Film {
     @JsonDeserialize(using = DurationDeserializer.class)
     @NotNull
     private Duration duration;
-    private Set<User> likes = new HashSet<>();
+    private MPA mpa;
+    private LinkedHashSet<Genre> genres;
+
+    public Film(String name, String description, LocalDate releaseDate, Duration duration, MPA mpa,
+                LinkedHashSet<Genre> genres) {
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        this.mpa = mpa;
+        this.genres = genres;
+    }
 
     public Film(String name, String description, LocalDate releaseDate, Duration duration) {
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
+    }
+
+    public Film(String name, String description, LocalDate releaseDate, Duration duration, MPA mpa) {
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
+        this.duration = duration;
+        this.mpa = mpa;
     }
 }
